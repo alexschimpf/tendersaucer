@@ -1,0 +1,69 @@
+{
+    "name": "spotify-playlist-builder",
+    "version": "1.0.0",
+    "description": "Spotify Playlist Builder",
+    "main": "app.js",
+    "directories": {
+        "test": "tests"
+    },
+    "dependencies": {
+        "axios": "^0.18.0",
+        "rc-slider": "^8.6.5",
+        "react": "^16.8.2",
+        "react-dom": "^16.8.2",
+        "react-loader-spinner": "^2.3.0",
+        "react-popup": "^0.10.0",
+        "react-select": "^2.4.1",
+        "react-spring": "^8.0.7",
+        "react-windowed-select": "0.0.3-alpha"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.2.0",
+        "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+        "@babel/preset-env": "^7.2.0",
+        "@babel/preset-react": "^7.0.0",
+        "babel-core": "^6.26.3",
+        "babel-loader": "^8.0.4",
+        "babel-plugin-transform-strict-mode": "^6.24.1",
+        "babel-polyfill": "^6.26.0",
+        "babel-preset-env": "^1.7.0",
+        "babel-preset-react": "^6.24.1",
+        "concurrently": "^4.1.0",
+        "cpx": "^1.5.0",
+        "css-loader": "^2.0.0",
+        "extract-text-webpack-plugin": "^3.0.2",
+        "file-loader": "^2.0.0",
+        "html-loader": "^0.5.5",
+        "html-webpack-plugin": "^3.2.0",
+        "mini-css-extract-plugin": "^0.5.0",
+        "node-sass": "^4.10.0",
+        "optimize-css-assets-webpack-plugin": "^5.0.1",
+        "sass": "^1.15.2",
+        "sass-loader": "^7.1.0",
+        "style-loader": "^0.23.1",
+        "uglifyjs-webpack-plugin": "^2.0.1",
+        "url-loader": "^1.1.2",
+        "webpack": "^4.29.5",
+        "webpack-cli": "^3.1.2",
+        "webpack-livereload-plugin": "^2.1.1"
+    },
+    "scripts": {
+        "copy-to-static": "cpx \"dist/*.{html,css,js,map,png,svg,jpg,jpeg,gif}\" static",
+        "copy-to-static:dev": "cpx \"dist/*.{html,css,js,map,png,svg,jpg,jpeg,gif}\" static --watch",
+        "build:prod": "NODE_ENV=production webpack --progress --bail",
+        "build:dev": "NODE_ENV=development webpack --progress --watch",
+        "dev": "npm run clean && concurrently \"npm run build:dev\" \"npm run copy-to-static:dev\"",
+        "prod": "npm run clean && npm run build:prod && npm run copy-to-static",
+        "clean": "rm -f static/_* && rm -f dist/*"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/alexschimpf/Spotify-Playlist-Builder"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/alexschimpf/Spotify-Playlist-Builder/issues"
+    },
+    "homepage": "https://tendersaucer.com"
+}
