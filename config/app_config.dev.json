@@ -1,0 +1,49 @@
+{
+    "environment": "dev",
+    "celery": {
+        "backend": "redis://localhost:6379/0",
+        "broker": "pyamqp://guest@localhost//"
+    },
+    "redis": {
+        "spotify": {
+            "host": "localhost",
+            "port": 6379,
+            "db": 1,
+            "max_connections": 1000
+        },
+        "session": {
+            "host": "localhost",
+            "port": 6379,
+            "db": 2,
+            "max_connections": 1000
+        }
+    },
+    "spotify": {
+        "client_id": null,
+        "client_secret": null,
+        "redirect_url": "http://0.0.0.0:5000/spotify_callback"
+    },
+    "logging": {
+        "version": 1,
+        "disable_existing_loggers": false,
+        "formatters": {
+            "default": {
+                "format": "%(asctime)s [PID %(process)d] [Thread %(thread)d] [%(levelname)s] [%(name)s] %(message)s"
+            }
+        },
+        "handlers": {
+            "console": {
+                "class": "logging.StreamHandler",
+                "level": "INFO",
+                "formatter": "default",
+                "stream": "ext://sys.stdout"
+            }
+        },
+        "root": {
+            "level": "INFO",
+            "handlers": [
+                "console"
+            ]
+        }
+    }
+}

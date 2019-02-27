@@ -1,17 +1,13 @@
 import os
 import time
-import tasks
 import redis
-import json
 import datetime
 from flask_session import Session
-from tasks import app as celery_app
-from celery.result import AsyncResult
-from app_config import APP_CONFIG, GENRES
-from service import redis_service as Redis
-from service.spotify_service import Spotify
-from flask import Flask, request, render_template, session, redirect, jsonify
-from utils import catch_errors, delimited_list, boolean, CustomException, spotfiy_auth_required
+from flask import Flask, request, session, redirect, jsonify
+from tendersaucer.config import APP_CONFIG
+from tendersaucer.utils import catch_errors
+from tendersaucer.service import redis_client
+from tendersaucer.service.spotify_client import Spotify
 
 
 app = Flask(__name__, template_folder='static')
@@ -20,7 +16,7 @@ app.config.update({
     'SESSION_TYPE': 'redis',
     'SESSION_KEY_PREFIX': 'session:',
     'PERMANENT_SESSION_LIFETIME': datetime.timedelta(hours=24),
-    'SESSION_REDIS': redis.Redis(connection_pool=Redis.SESSION_CONN_POOL),
+    'SESSION_REDIS': redis.Redis(connection_pool=redis_client.SESSION_CONN_POOL),
     'SECRET_KEY': APP_CONFIG.get('session_secret_key') or os.getenv('SESSION_SECRET_KEY')
 })
 Session(app)
