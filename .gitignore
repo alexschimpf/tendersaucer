@@ -6,3 +6,4 @@ app_config.json
 tendersaucer/static/_*
 dist/
 node_modules/
+.DS_Store

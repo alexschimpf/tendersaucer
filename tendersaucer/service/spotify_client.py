@@ -25,3 +25,26 @@ class Spotify(spotipy.Spotify):
         credentials = SpotifyClientCredentials(
             client_id=cls.SPOTIFY_CLIENT_ID, client_secret=cls.SPOTIFY_CLIENT_SECRET)
         return Spotify(client_credentials_manager=credentials)
+
+    def get_related_artists(self, artist_id):
+        return (self.artist_related_artists(artist_id=artist_id) or {}).get('artists') or ()
+
+    def get_top_tracks(self, artist_id):
+        return (self.artist_top_tracks(artist_id=artist_id) or {}).get('tracks') or ()
+
+    def get_artist(self, artist_id):
+        return self.artist(artist_id=artist_id)
+
+    def get_artists(self, artist_ids):
+        if not isinstance(artist_ids, list):
+            artist_ids = list(artist_ids)
+
+        i = 0
+        result = []
+        while i < len(artist_ids):
+            end_index = min(i + 50, len(artist_ids))
+            artists = self.artists(artists=artist_ids[i:end_index])
+            result.extend(artists['artists'])
+            i += 50
+
+        return result
