@@ -6,7 +6,7 @@ import argparse
 from lru import LRU
 from tendersaucer import utils
 from tendersaucer.db import track
-from tendersaucer.service import redis_client
+from tendersaucer.service import neo4j_client
 from tendersaucer.service.spotify_client import Spotify
 from concurrent.futures import ThreadPoolExecutor, wait
 
@@ -51,7 +51,7 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
                 for artist_id in artist_ids:
                     if artist_id in artists_by_id:
                         cached_artist_ids.add(artist_id)
-                    elif redis_client.artist_exists(artist_id=artist_id):
+                    elif neo4j_client.artist_exists(artist_id=artist_id):
                         existing_artist_ids.add(artist_id)
                     else:
                         new_artist_ids.add(artist_id)
@@ -66,11 +66,12 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
 
                 # Get related artists from Redis for existing artists
                 for existing_artist_id in existing_artist_ids:
-                    related_artist_ids = redis_client.get_related_artist_ids(artist_id=existing_artist_id)
+                    related_artist_ids = neo4j_client.get_related_artist_ids(artist_id=existing_artist_id)
                     all_related_artist_ids.update(related_artist_ids)
 
                 for new_artist in new_artists:
                     new_artist_id = new_artist['id']
+                    logger.info(new_artist_id)
 
                     # Index new artists in redis
                     related_artist_ids = set()
@@ -80,7 +81,7 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
                         related_artist_ids.add(related_artist_id)
                         artists_by_id[related_artist_id] = related_artist
                     all_related_artist_ids.update(related_artist_ids)
-                    redis_client.index_artist(
+                    neo4j_client.index_artist(
                         artist_id=new_artist_id, related_artist_ids=related_artist_ids,
                         genres=new_artist.get('genres'))
 
@@ -112,7 +113,7 @@ def _get_seed_artist():
             query = '{}*{}'.format(query[:random_wildcard_pos], query[random_wildcard_pos:])
             search_results = spotify_client.search(q=query, type='artist', limit=50)
             for artist in search_results['artists']['items'] or ():
-                if not redis_client.artist_exists(artist_id=artist['id']):
+                if not neo4j_client.artist_exists(artist_id=artist['id']):
                     return artist['id']
         elif choice == 1:
             # Select artist from genre-seeded track recommendations
@@ -120,7 +121,7 @@ def _get_seed_artist():
             genre_recommendations = spotify_client.recommendations(seed_genres=[genre_seed], limit=100)
             for track in genre_recommendations['tracks'] or ():
                 for artist in track['artists'] or ():
-                    if not redis_client.artist_exists(artist_id=artist['id']):
+                    if not neo4j_client.artist_exists(artist_id=artist['id']):
                         return artist['id']
 
 

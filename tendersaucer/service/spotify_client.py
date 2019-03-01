@@ -5,12 +5,9 @@ from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 
 
 class Spotify(spotipy.Spotify):
-    SPOTIFY_CLIENT_ID = \
-        APP_CONFIG.get('spotify', {}).get('client_id') or \
-        os.getenv('SPOTIFY_CLIENT_ID')
-    SPOTIFY_CLIENT_SECRET = \
-        APP_CONFIG.get('spotify', {}).get('client_secret') or \
-        os.getenv('SPOTIFY_CLIENT_SECRET')
+
+    SPOTIFY_CLIENT_ID = APP_CONFIG['spotify']['client_id']
+    SPOTIFY_CLIENT_SECRET = APP_CONFIG['spotify']['client_secret']
 
     @classmethod
     def get_oauth_client(cls):

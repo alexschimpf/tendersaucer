@@ -23,6 +23,11 @@
         "client_secret": null,
         "redirect_url": "http://0.0.0.0:5000/spotify_callback"
     },
+    "neo4j": {
+        "user": "neo4j",
+        "password": "",
+        "uri": "bolt://localhost:7687"
+    },
     "logging": {
         "version": 1,
         "disable_existing_loggers": false,
