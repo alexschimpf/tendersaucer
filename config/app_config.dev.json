@@ -8,8 +8,8 @@
         "host": "localhost",
         "port": 3306,
         "database": "tendersaucer",
-        "user": "",
-        "password": "",
+        "user": "root",
+        "password": null,
         "pool_size": 5
     },
     "redis": {
@@ -33,7 +33,7 @@
     },
     "neo4j": {
         "user": "neo4j",
-        "password": "",
+        "password": null,
         "uri": "bolt://localhost:7687"
     },
     "logging": {

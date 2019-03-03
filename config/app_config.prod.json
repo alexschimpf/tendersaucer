@@ -8,7 +8,7 @@
         "host": "localhost",
         "port": 3306,
         "database": "tendersaucer",
-        "user": "",
+        "user": "root",
         "password": "",
         "pool_size": 5
     },
