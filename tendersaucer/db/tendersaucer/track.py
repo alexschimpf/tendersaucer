@@ -12,7 +12,7 @@ def insert_or_update_tracks(artist_id, top_tracks, audio_features):
 
         tempo, danceability = None, None
         for audio_features_obj in audio_features:
-            if audio_features_obj['id'] == track_id:
+            if audio_features_obj and audio_features_obj['id'] == track_id:
                 tempo = audio_features_obj.get('tempo') or None
                 if tempo:
                     tempo = int(tempo)
