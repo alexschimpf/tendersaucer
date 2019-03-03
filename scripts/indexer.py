@@ -14,10 +14,16 @@ from concurrent.futures import ThreadPoolExecutor, wait
 logger = logging.getLogger('scripts.indexer')
 
 
-def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress_time_limit=None):
+def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress_time_limit=None, run_time_limit=None):
+    process_start_time = time.time()
+
     artists_by_id = LRU(artist_cache_size)
     spotify_client = Spotify.get_basic_client()
     while True:
+        if run_time_limit and time.time() - process_start_time > run_time_limit:
+            logger.info('Run time limit reached. Ending search.')
+            break
+
         try:
             start_time = time.time()
             last_index_time = time.time()
@@ -26,6 +32,8 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
             stack = [artist_id]
             while stack:
                 curr_time = time.time()
+                if run_time_limit and curr_time - process_start_time > run_time_limit:
+                    break
                 if search_time_limit and curr_time - start_time > search_time_limit:
                     logger.info('Search time limit reached. Restarting search.')
                     break
@@ -71,12 +79,16 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
 
                 for new_artist in new_artists:
                     new_artist_id = new_artist['id']
-                    if not new_artist['popularity']:
+                    if not new_artist['popularity'] or not new_artist.get('genres'):
                         continue
 
                     related_artist_ids = set()
                     related_artists = spotify_client.get_related_artists(artist_id=new_artist_id)
                     if not related_artists:
+                        continue
+
+                    top_tracks = spotify_client.get_top_tracks(artist_id=new_artist_id)
+                    if not top_tracks:
                         continue
 
                     # Index new artists in redis
@@ -91,7 +103,6 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
                         genres=new_artist.get('genres'))
 
                     # Add top tracks to database
-                    top_tracks = spotify_client.get_top_tracks(artist_id=new_artist_id)
                     track.insert_or_update_tracks(artist_id=new_artist_id, top_tracks=top_tracks)
 
                     last_index_time = time.time()
@@ -102,7 +113,55 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
 
 
 def run_update(visited):
-    pass
+    spotify_client = Spotify.get_basic_client()
+
+    for artist_id in neo4j_client.get_all_artist_ids():
+        try:
+            if artist_id not in visited:
+                visited.add(artist_id)
+
+                artist = spotify_client.get_artist(artist_id=artist_id)
+                if artist.get('id') != artist_id:
+                    continue
+
+                logger.info('Updating artist: {}'.format(artist['name']))
+
+                related_artists = spotify_client.get_related_artists(artist_id=artist_id)
+                related_artist_ids = [related_artist['id'] for related_artist in related_artists]
+                neo4j_client.index_artist(
+                    artist_id=artist_id, related_artist_ids=related_artist_ids,
+                    genres=artist.get('genres'))
+
+                # Add top tracks to database
+                top_tracks = spotify_client.get_top_tracks(artist_id=artist_id)
+                if top_tracks:
+                    track.insert_or_update_tracks(artist_id=artist_id, top_tracks=top_tracks)
+
+                # Check for non-indexed related artists
+                for artist in related_artists:
+                    if not artist['popularity'] or not artist.get('genres'):
+                        continue
+
+                    artist_id = artist['id']
+                    if not neo4j_client.artist_exists(artist_id=artist_id):
+                        logger.info('Found new artist: {}'.format(artist['name']))
+
+                        related_artists_ = spotify_client.get_related_artists(artist_id=artist_id)
+                        if not related_artists_:
+                            continue
+
+                        top_tracks = spotify_client.get_top_tracks(artist_id=artist_id)
+                        if not top_tracks:
+                            continue
+
+                        related_artist_ids = [related_artist['id'] for related_artist in related_artists_]
+                        neo4j_client.index_artist(
+                            artist_id=artist_id, related_artist_ids=related_artist_ids,
+                            genres=artist.get('genres'))
+                        if top_tracks:
+                            track.insert_or_update_tracks(artist_id=artist_id, top_tracks=top_tracks)
+        except Exception as e:
+            logger.exception(e)
 
 
 def _get_seed_artist():
@@ -134,29 +193,37 @@ if __name__ == '__main__':
     utils.init_logger()
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--run-mode', type=str, choices=('discover', 'update'), required=True,
-                        help='Discover mode - For indexing new artists.'
-                             'Update mode - For updating previously indexed artists.')
-    parser.add_argument('--num-workers', type=int, default=4, required=False)
-    parser.add_argument('--search-time-limit', type=int, required=False,
-                        help='Search will restart with new seed artist after X seconds')
-    parser.add_argument('--no-progress-time-limit', type=int, required=False,
-                        help='Search will restart with new seed artist if nothing has been indexed for X seconds')
-    parser.add_argument('--artist-cache-size', type=int, default=500000, required=False,
-                        help='Number of items to hold in artist LRU cache (to limit memory consumption)')
+    parser.add_argument(
+        '--run-mode', type=str, choices=('discover', 'update'), required=True,
+        help='Discover mode - For indexing new artists. Update mode - For updating previously indexed artists.')
+    parser.add_argument(
+        '--num-workers', type=int, default=4, required=False, help='Only for discover mode')
+    parser.add_argument(
+        '--search-time-limit', type=int, required=False,
+        help='Search will restart with new seed artist after X seconds (only for discover mode)')
+    parser.add_argument(
+        '--no-progress-time-limit', type=int, required=False,
+        help='Search will restart with new seed artist if nothing has been indexed for '
+             'X seconds (only for discover mode)')
+    parser.add_argument(
+        '--artist-cache-size', type=int, default=500000, required=False,
+        help='Number of items to hold in artist LRU cache - to limit memory consumption (only for discover mode)')
+    parser.add_argument(
+        '--run-time-limit', type=int, required=False,
+        help='Process will be stopped after X seconds (only for discover mode)')
     args = parser.parse_args()
 
     if args.run_mode == 'update':
         args.num_workers = 1
 
-    visited = utils.ConcurrentSet()
+    _visited = utils.ConcurrentSet()
     with ThreadPoolExecutor(max_workers=args.num_workers) as executor:
         futures = []
         for _ in range(args.num_workers):
             if args.run_mode == 'discover':
-                future = executor.submit(run_discover, visited, args.artist_cache_size, args.search_time_limit,
-                                         args.no_progress_time_limit)
+                future = executor.submit(run_discover, _visited, args.artist_cache_size, args.search_time_limit,
+                                         args.no_progress_time_limit, args.run_time_limit)
             elif args.run_mode == 'update':
-                future = executor.submit(run_update, visited)
+                future = executor.submit(run_update, _visited)
             futures.append(future)
         wait(futures)
