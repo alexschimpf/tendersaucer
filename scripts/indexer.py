@@ -71,11 +71,16 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
 
                 for new_artist in new_artists:
                     new_artist_id = new_artist['id']
-                    logger.info(new_artist_id)
+                    if not new_artist['popularity']:
+                        continue
 
-                    # Index new artists in redis
                     related_artist_ids = set()
                     related_artists = spotify_client.get_related_artists(artist_id=new_artist_id)
+                    if not related_artists:
+                        continue
+
+                    # Index new artists in redis
+                    logger.info(new_artist['name'])
                     for related_artist in related_artists:
                         related_artist_id = related_artist['id']
                         related_artist_ids.add(related_artist_id)
