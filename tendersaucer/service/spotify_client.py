@@ -1,4 +1,3 @@
-import os
 import spotipy
 from tendersaucer.config import APP_CONFIG
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
@@ -45,3 +44,6 @@ class Spotify(spotipy.Spotify):
             i += 50
 
         return result
+
+    def get_audio_features_for_tracks(self, track_ids):
+        return self.audio_features(tracks=track_ids) or ()

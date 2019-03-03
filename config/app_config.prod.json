@@ -4,6 +4,14 @@
         "backend": "redis://localhost:6379/0",
         "broker": "pyamqp://guest@localhost//"
     },
+    "mysql": {
+        "host": "localhost",
+        "port": 3306,
+        "database": "tendersaucer",
+        "user": "",
+        "password": "",
+        "pool_size": 5
+    },
     "redis": {
         "spotify": {
             "host": "localhost",

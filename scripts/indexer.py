@@ -5,7 +5,7 @@ import logging
 import argparse
 from lru import LRU
 from tendersaucer import utils
-from tendersaucer.db import track
+from tendersaucer.db.tendersaucer import track
 from tendersaucer.service import neo4j_client
 from tendersaucer.service.spotify_client import Spotify
 from concurrent.futures import ThreadPoolExecutor, wait
@@ -103,7 +103,10 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
                         genres=new_artist.get('genres'))
 
                     # Add top tracks to database
-                    track.insert_or_update_tracks(artist_id=new_artist_id, top_tracks=top_tracks)
+                    top_track_ids = [top_track['id'] for top_track in top_tracks]
+                    top_track_audio_features = spotify_client.get_audio_features_for_tracks(track_ids=top_track_ids)
+                    track.insert_or_update_tracks(
+                        artist_id=new_artist_id, top_tracks=top_tracks, audio_features=top_track_audio_features)
 
                     last_index_time = time.time()
 
@@ -135,7 +138,10 @@ def run_update(visited):
                 # Add top tracks to database
                 top_tracks = spotify_client.get_top_tracks(artist_id=artist_id)
                 if top_tracks:
-                    track.insert_or_update_tracks(artist_id=artist_id, top_tracks=top_tracks)
+                    top_track_ids = [top_track['id'] for top_track in top_tracks]
+                    top_track_audio_features = spotify_client.get_audio_features_for_tracks(track_ids=top_track_ids)
+                    track.insert_or_update_tracks(
+                        artist_id=artist_id, top_tracks=top_tracks, audio_features=top_track_audio_features)
 
                 # Check for non-indexed related artists
                 for artist in related_artists:
@@ -158,8 +164,11 @@ def run_update(visited):
                         neo4j_client.index_artist(
                             artist_id=artist_id, related_artist_ids=related_artist_ids,
                             genres=artist.get('genres'))
-                        if top_tracks:
-                            track.insert_or_update_tracks(artist_id=artist_id, top_tracks=top_tracks)
+
+                        top_track_ids = [top_track['id'] for top_track in top_tracks]
+                        top_track_audio_features = spotify_client.get_audio_features_for_tracks(track_ids=top_track_ids)
+                        track.insert_or_update_tracks(
+                            artist_id=artist_id, top_tracks=top_tracks, audio_features=top_track_audio_features)
         except Exception as e:
             logger.exception(e)
 
