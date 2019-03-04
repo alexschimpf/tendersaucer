@@ -71,7 +71,7 @@ def index_artist(artist, related_artists, genres):
     parameters = {
         'id0': artist['id']
     }
-    related_artists = list(related_artists)
+    related_artists = list(filter(lambda a: a['popularity'] and a['genres'], related_artists))
     if len(related_artists) < 15:
         related_artist_batches = [related_artists]
     else:
