@@ -99,8 +99,7 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
                         artists_by_id[related_artist_id] = related_artist
                     all_related_artist_ids.update(related_artist_ids)
                     neo4j_client.index_artist(
-                        artist_id=new_artist_id, related_artist_ids=related_artist_ids,
-                        genres=new_artist.get('genres'))
+                        artist=new_artist, related_artists=related_artists, genres=new_artist.get('genres'))
 
                     # Add top tracks to database
                     top_track_ids = [top_track['id'] for top_track in top_tracks]
@@ -130,10 +129,8 @@ def run_update(visited):
                 logger.info('Updating artist: {}'.format(artist['name']))
 
                 related_artists = spotify_client.get_related_artists(artist_id=artist_id)
-                related_artist_ids = [related_artist['id'] for related_artist in related_artists]
                 neo4j_client.index_artist(
-                    artist_id=artist_id, related_artist_ids=related_artist_ids,
-                    genres=artist.get('genres'))
+                    artist=artist, related_artists=related_artists, genres=artist.get('genres'))
 
                 # Add top tracks to database
                 top_tracks = spotify_client.get_top_tracks(artist_id=artist_id)
@@ -160,10 +157,8 @@ def run_update(visited):
                         if not top_tracks:
                             continue
 
-                        related_artist_ids = [related_artist['id'] for related_artist in related_artists_]
                         neo4j_client.index_artist(
-                            artist_id=artist_id, related_artist_ids=related_artist_ids,
-                            genres=artist.get('genres'))
+                            artist=artist, related_artists=related_artists, genres=artist.get('genres'))
 
                         top_track_ids = [top_track['id'] for top_track in top_tracks]
                         top_track_audio_features = spotify_client.get_audio_features_for_tracks(track_ids=top_track_ids)

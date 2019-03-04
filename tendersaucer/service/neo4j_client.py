@@ -46,7 +46,7 @@ def get_all_genres(skip_cache=False):
         return _GENRES
 
 
-def index_artist(artist_id, related_artist_ids, genres):
+def index_artist(artist, related_artists, genres):
     graph = _get_graph()
 
     # Create artist-genre relationships
@@ -54,9 +54,9 @@ def index_artist(artist_id, related_artist_ids, genres):
         'MERGE (a:Artist {id: $id0})'
     ]
     parameters = {
-        'id0': artist_id
+        'id0': artist['id']
     }
-    for index, genre in enumerate(genres):
+    for index, genre in enumerate(genres or ()):
         queries.append('MERGE (g%d:Genre {name: $name%d})' % (index, index))
         queries.append('MERGE (a)-[:IN_GENRE]-(g%d)' % index)
         parameters['name%d' % index] = genre
@@ -65,28 +65,31 @@ def index_artist(artist_id, related_artist_ids, genres):
 
     # Create artist-artist relationships
     queries = [
-        'MATCH (a:Artist {id: $id0})'
+        'MATCH (a:Artist {id: $id0})',
+        'SET a.popularity = %d' % (artist['popularity'] or 0)
     ]
     parameters = {
-        'id0': artist_id
+        'id0': artist['id']
     }
-    related_artist_ids = list(related_artist_ids)
-    if len(related_artist_ids) < 15:
-        related_artist_ids_batches = [related_artist_ids]
+    related_artists = list(related_artists)
+    if len(related_artists) < 15:
+        related_artist_batches = [related_artists]
     else:
         # Split up artists into 2 batches to make 2 smaller queries
-        split_index = int(len(related_artist_ids) / 2)
-        related_artist_ids_batches = [
-            related_artist_ids[:split_index],
-            related_artist_ids[split_index:]
+        split_index = int(len(related_artists) / 2)
+        related_artist_batches = [
+            related_artists[:split_index],
+            related_artists[split_index:]
         ]
 
-    for related_artist_ids in related_artist_ids_batches:
+    for related_artists in related_artist_batches:
         related_artist_queries = []
-        for index, related_artist_id in enumerate(related_artist_ids):
+        for index, related_artist in enumerate(related_artists):
             related_artist_queries.append('MERGE (b%d:Artist {id: $id%d})' % (index + 1, index + 1))
+            related_artist_queries.append(
+                'ON CREATE SET b%d.popularity = %d' % (index + 1, related_artist['popularity'] or 0))
             related_artist_queries.append('MERGE (a)-[:RELATED]-(b%d)' % (index + 1))
-            parameters['id%d' % (index + 1)] = related_artist_id
+            parameters['id%d' % (index + 1)] = related_artist['id']
         query = '\n'.join(queries + related_artist_queries)
         graph.run(query, parameters)
 
