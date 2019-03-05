@@ -44,7 +44,9 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
                 # Pop up to 50 unvisited artists from the stack
                 artist_ids = set()
                 pop_start_time = time.time()
-                while stack and len(artist_ids) < 50 and (time.time() - pop_start_time) < 3:
+                while stack and len(artist_ids) < 50:
+                    if time.time() - pop_start_time > 2:
+                        break
                     artist_id = stack.pop()
                     if isinstance(artist_id, bytes):
                         artist_id = artist_id.decode('utf8')
@@ -52,54 +54,61 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
                         visited.add(artist_id)
                         artist_ids.add(artist_id)
 
-                # Split out artists into new/cached/existing lists
-                new_artist_ids = set()
+                if not artist_ids:
+                    continue
+
+                # Split up artists into indexed/non-indexed/cached groups
+                indexed_artist_ids = track.get_artists_with_tracks(artist_ids=artist_ids)
+
                 cached_artist_ids = set()
-                existing_artist_ids = set()
+                non_indexed_artist_ids = set()
                 for artist_id in artist_ids:
-                    if artist_id in artists_by_id:
-                        cached_artist_ids.add(artist_id)
-                    elif neo4j_client.artist_exists(artist_id=artist_id):
-                        existing_artist_ids.add(artist_id)
-                    else:
-                        new_artist_ids.add(artist_id)
+                    if artist_id not in indexed_artist_ids:
+                        if artist_id in artists_by_id:
+                            cached_artist_ids.add(artist_id)
+                        else:
+                            non_indexed_artist_ids.add(artist_id)
 
                 # Fetch new artist ids via Spotify API (and add cached ones)
-                new_artists = spotify_client.get_artists(artist_ids=new_artist_ids)
+                non_indexed_artists = spotify_client.get_artists(artist_ids=non_indexed_artist_ids)
                 for cached_artist_id in cached_artist_ids:
-                    new_artist = artists_by_id[cached_artist_id]
-                    new_artists.append(new_artist)
+                    non_indexed_artist = artists_by_id[cached_artist_id]
+                    non_indexed_artists.append(non_indexed_artist)
 
                 all_related_artist_ids = set()
 
                 # Get related artists from Redis for existing artists
-                for existing_artist_id in existing_artist_ids:
-                    related_artist_ids = neo4j_client.get_related_artist_ids(artist_id=existing_artist_id)
+                for indexed_artist_id in indexed_artist_ids:
+                    related_artist_ids = neo4j_client.get_related_artist_ids(artist_id=indexed_artist_id)
                     all_related_artist_ids.update(related_artist_ids)
 
-                for new_artist in new_artists:
-                    new_artist_id = new_artist['id']
-                    if not new_artist['popularity'] or not new_artist.get('genres'):
+                for non_indexed_artist in non_indexed_artists:
+                    new_artist_id = non_indexed_artist['id']
+                    if not non_indexed_artist['popularity'] or not non_indexed_artist.get('genres'):
+                        logger.info('SKIPPING...')
                         continue
 
                     related_artist_ids = set()
                     related_artists = spotify_client.get_related_artists(artist_id=new_artist_id)
                     if not related_artists:
+                        logger.info('SKIPPING...')
                         continue
 
                     top_tracks = spotify_client.get_top_tracks(artist_id=new_artist_id)
                     if not top_tracks:
+                        logger.info('SKIPPING...')
                         continue
 
                     # Index new artists in redis
-                    logger.info(new_artist['name'])
+                    logger.info(non_indexed_artist['name'])
                     for related_artist in related_artists:
                         related_artist_id = related_artist['id']
                         related_artist_ids.add(related_artist_id)
                         artists_by_id[related_artist_id] = related_artist
                     all_related_artist_ids.update(related_artist_ids)
                     neo4j_client.index_artist(
-                        artist=new_artist, related_artists=related_artists, genres=new_artist.get('genres'))
+                        artist=non_indexed_artist, related_artists=related_artists,
+                        genres=non_indexed_artist.get('genres'))
 
                     # Add top tracks to database
                     top_track_ids = [top_track['id'] for top_track in top_tracks]

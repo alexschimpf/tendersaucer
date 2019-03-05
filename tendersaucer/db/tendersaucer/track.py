@@ -1,5 +1,22 @@
-from tendersaucer.db.utils import execute
+from tendersaucer.db.utils import execute, fetch_all, handle_list_params
 from tendersaucer.db.tendersaucer import CONNECTION_POOL
+
+
+def get_artists_with_tracks(artist_ids):
+    query = '''
+        SELECT
+            DISTINCT artist_id
+        FROM
+            tendersaucer.top_tracks
+        WHERE
+            artist_id IN (%(artist_ids)s)
+    '''
+    params = {
+        'artist_ids': artist_ids
+    }
+    query, params = handle_list_params(query=query, params=params)
+    rows = fetch_all(pool=CONNECTION_POOL, query=query, params=params)
+    return {row['artist_id'] for row in rows}
 
 
 def insert_or_update_tracks(artist_id, top_tracks, audio_features):

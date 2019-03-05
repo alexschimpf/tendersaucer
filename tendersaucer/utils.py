@@ -78,5 +78,12 @@ def boolean(text):
     return str(text).lower() in ('1', 'true', 'yes', 'y')
 
 
+def chunkify(l, chunk_size):
+    result = []
+    for i in range(0, len(l), chunk_size):
+        result.append(l[i:i + chunk_size])
+    return result
+
+
 def init_logger():
     logging.config.dictConfig(APP_CONFIG['logging'])
