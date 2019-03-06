@@ -12,14 +12,18 @@ def artist_exists(artist_id):
     return bool(result.data())
 
 
-def get_related_artist_ids(artist_id, max_num_hops=1):
+def get_related_artists(artist_id, max_num_hops=1):
     query = '''
         MATCH (a:Artist)-[:RELATED*1..%d]-(b:Artist)
         WHERE a.id = "%s" AND a <> b 
-        RETURN DISTINCT b.id
+        RETURN DISTINCT b.id AS id, 
+               COLLECT(b.popularity)[0] AS popularity
     ''' % (max_num_hops, artist_id)
     result = _get_graph().run(query)
-    return list(map(lambda artist: artist['b.id'], result))
+    return list(map(lambda artist: {
+        'id': artist['idd'],
+        'popularity': artist['popularity']
+    }, result))
 
 
 def get_all_artist_ids():
@@ -29,39 +33,41 @@ def get_all_artist_ids():
         yield artist['a.id']
 
 
-def get_genres(artist_id):
+def get_artist_genres(artist_ids):
+    params = {}
+    for index, artist_id in enumerate(artist_ids):
+        params['a%d' % index] = artist_id
+    artist_id_params = ['$' + param_key for param_key in params.keys()]
+
     query = '''
         MATCH (a:Artist)-[:IN_GENRE]-(g:Genre)
-        WHERE a.id = "%s"
-        RETURN DISTINCT g.name
-    ''' % artist_id
-    result = _get_graph().run(query)
+        WHERE a.id IN {artist_id_params}
+        RETURN DISTINCT a.id AS id, 
+               COLLECT(g.name) AS genres
+    '''.format(artist_id_params=artist_id_params)
+    result = _get_graph().run(query, params)
     for genre in result:
         yield genre['g.name']
 
 
-def get_artists_from_genres(genres, artist_popularity_range=None):
+def get_artists_from_genres(genres):
     params = {}
     genres = list(set(genres))
     for index, genre in enumerate(genres):
         params['g%d' % index] = genre
     genre_params = ['$' + param_key for param_key in params.keys()]
 
-    popularity_condition = ''
-    if artist_popularity_range:
-        popularity_condition = \
-            'AND a.popularity >= $min_popularity AND a.popularity <= $max_popularity'
-        params['min_popularity'] = artist_popularity_range[0]
-        params['max_popularity'] = artist_popularity_range[1]
-
     query = '''
         MATCH (a:Artist)-[:IN_GENRE]->(g:Genre)
-        WHERE g.name IN [{genre_params}] {popularity_condition}
-        RETURN DISTINCT a.id;
-    '''.format(genre_params=','.join(genre_params), popularity_condition=popularity_condition)
+        WHERE g.name IN [{genre_params}]
+        RETURN DISTINCT a.id AS id, 
+               COLLECT(a.popularity)[0] AS popularity;
+    '''.format(genre_params=','.join(genre_params))
     result = _get_graph().run(query, params)
-
-    return list(map(lambda a: a['a.id'], result))
+    return list(map(lambda artist: {
+        'id': artist['id'],
+        'popularity': artist['popularity']
+    }, result))
 
 
 def get_all_genres(skip_cache=False):

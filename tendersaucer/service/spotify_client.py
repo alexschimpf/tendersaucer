@@ -49,11 +49,32 @@ class Spotify(spotipy.Spotify):
         return self.audio_features(tracks=track_ids) or ()
 
     def get_user_top_artists(self, time_ranges):
-        user_top_artist_ids = set()
+        user_top_artists = []
         for time_range in time_ranges:
             top_artists = self.current_user_top_artists(time_range=time_range)
             while top_artists:
-                top_artist_ids = [artist['id'] for artist in top_artists.get('items') or ()]
-                user_top_artist_ids.update(top_artist_ids)
+                user_top_artists.extend(top_artists)
                 top_artists = self.next(top_artists)
-        return user_top_artist_ids
+
+        return user_top_artists
+
+    def get_artists_from_user_playlists(self):
+        user_playlist_artist_ids = set()
+        user_id = self.current_user()['id']
+        playlists = self.current_user_playlists()
+        while playlists:
+            for playlist in playlists['items']:
+                if playlist['owner']['id'] != user_id:
+                    continue
+
+                playlist_tracks = self.user_playlist_tracks(
+                    user=user_id, playlist_id=playlist['id'])
+                while playlist_tracks:
+                    for item in playlist_tracks['items']:
+                        track_artists = item['track']['artists']
+                        artist_ids = [artist['id'] for artist in track_artists if artist['id']]
+                        user_playlist_artist_ids.update(artist_ids)
+                    playlist_tracks = self.next(playlist_tracks)
+            playlists = self.next(playlists)
+
+        return user_playlist_artist_ids
