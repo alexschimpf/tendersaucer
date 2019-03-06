@@ -88,18 +88,22 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
                     related_artist_ids = set()
                     related_artists = spotify_client.get_related_artists(artist_id=new_artist_id)
                     if not related_artists:
-                        logger.info('...Skipping...')
+                        logger.info('Skipping... no related artists')
                         continue
 
                     all_related_artist_ids.update(related_artist_ids)
 
-                    if not non_indexed_artist['popularity'] or not non_indexed_artist.get('genres'):
-                        logger.info('...Skipping...')
+                    if not non_indexed_artist['popularity']:
+                        logger.info('Skipping... 0 popularity')
+                        continue
+
+                    if not non_indexed_artist.get('genres'):
+                        logger.info('Skipping... no genres')
                         continue
 
                     top_tracks = spotify_client.get_top_tracks(artist_id=new_artist_id)
                     if not top_tracks:
-                        logger.info('...Skipping...')
+                        logger.info('Skipping... no top tracks')
                         continue
 
                     # Index new artists in redis
