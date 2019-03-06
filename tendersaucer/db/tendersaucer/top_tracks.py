@@ -2,6 +2,35 @@ from tendersaucer.db.utils import execute, fetch_all, handle_list_params
 from tendersaucer.db.tendersaucer import CONNECTION_POOL
 
 
+def get_tracks(artist_ids, tempo_range, release_year_range, danceability_range):
+    query = '''
+        SELECT
+            DISTINCT id
+        FROM
+            tendersaucer.top_tracks
+        WHERE
+            artist_id IN (%(artist_ids)s) AND
+            tempo >= %(tempo_min)s AND
+            tempo <= %(tempo_max)s AND
+            release_year BETWEEN (%(min_release_year)s AND %(max_release_year)s) AND
+            danceability >= %(danceability_min)s AND
+            danceability <= %(danceability_max)s
+    '''
+    params = {
+        'artist_ids': artist_ids,
+        'tempo_min': tempo_range[0],
+        'tempo_max': tempo_range[1],
+        'release_year_min': release_year_range[0],
+        'release_year_max': release_year_range[1],
+        'danceability_min': danceability_range[0],
+        'danceability_max': danceability_range[1]
+    }
+    query, params = handle_list_params(query=query, params=params)
+    rows = fetch_all(pool=CONNECTION_POOL, query=query, params=params)
+    for row in rows:
+        yield row['id']
+
+
 def get_artists_with_tracks(artist_ids):
     query = '''
         SELECT

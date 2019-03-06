@@ -5,7 +5,7 @@ import logging
 import argparse
 from lru import LRU
 from tendersaucer import utils
-from tendersaucer.db.tendersaucer import track
+from tendersaucer.db.tendersaucer import top_tracks
 from tendersaucer.service import neo4j_client
 from tendersaucer.service.spotify_client import Spotify
 from concurrent.futures import ThreadPoolExecutor, wait
@@ -58,7 +58,7 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
                     continue
 
                 # Split up artists into indexed/non-indexed/cached groups
-                indexed_artist_ids = track.get_artists_with_tracks(artist_ids=artist_ids)
+                indexed_artist_ids = top_tracks.get_artists_with_tracks(artist_ids=artist_ids)
 
                 cached_artist_ids = set()
                 non_indexed_artist_ids = set()
@@ -84,19 +84,22 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
 
                 for non_indexed_artist in non_indexed_artists:
                     new_artist_id = non_indexed_artist['id']
-                    if not non_indexed_artist['popularity'] or not non_indexed_artist.get('genres'):
-                        logger.info('SKIPPING...')
-                        continue
 
                     related_artist_ids = set()
                     related_artists = spotify_client.get_related_artists(artist_id=new_artist_id)
                     if not related_artists:
-                        logger.info('SKIPPING...')
+                        logger.info('...Skipping...')
                         continue
 
-                    top_tracks = spotify_client.get_top_tracks(artist_id=new_artist_id)
-                    if not top_tracks:
-                        logger.info('SKIPPING...')
+                    all_related_artist_ids.update(related_artist_ids)
+
+                    if not non_indexed_artist['popularity'] or not non_indexed_artist.get('genres'):
+                        logger.info('...Skipping...')
+                        continue
+
+                    artist_top_tracks = spotify_client.get_top_tracks(artist_id=new_artist_id)
+                    if not artist_top_tracks:
+                        logger.info('...Skipping...')
                         continue
 
                     # Index new artists in redis
@@ -105,15 +108,15 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
                         related_artist_id = related_artist['id']
                         related_artist_ids.add(related_artist_id)
                         artists_by_id[related_artist_id] = related_artist
-                    all_related_artist_ids.update(related_artist_ids)
+
                     neo4j_client.index_artist(
                         artist=non_indexed_artist, related_artists=related_artists,
                         genres=non_indexed_artist.get('genres'))
 
                     # Add top tracks to database
-                    top_track_ids = [top_track['id'] for top_track in top_tracks]
+                    top_track_ids = [top_track['id'] for top_track in artist_top_tracks]
                     top_track_audio_features = spotify_client.get_audio_features_for_tracks(track_ids=top_track_ids)
-                    track.insert_or_update_tracks(
+                    top_tracks.insert_or_update_tracks(
                         artist_id=new_artist_id, top_tracks=top_tracks, audio_features=top_track_audio_features)
 
                     last_index_time = time.time()
@@ -146,7 +149,7 @@ def run_update(visited):
                 if top_tracks:
                     top_track_ids = [top_track['id'] for top_track in top_tracks]
                     top_track_audio_features = spotify_client.get_audio_features_for_tracks(track_ids=top_track_ids)
-                    track.insert_or_update_tracks(
+                    top_tracks.insert_or_update_tracks(
                         artist_id=artist_id, top_tracks=top_tracks, audio_features=top_track_audio_features)
 
                 # Check for non-indexed related artists
@@ -171,7 +174,7 @@ def run_update(visited):
 
                         top_track_ids = [top_track['id'] for top_track in top_tracks]
                         top_track_audio_features = spotify_client.get_audio_features_for_tracks(track_ids=top_track_ids)
-                        track.insert_or_update_tracks(
+                        top_tracks.insert_or_update_tracks(
                             artist_id=artist_id, top_tracks=top_tracks, audio_features=top_track_audio_features)
         except Exception as e:
             logger.exception(e)

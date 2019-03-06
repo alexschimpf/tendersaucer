@@ -4,6 +4,9 @@ import logging
 logger = logging.getLogger('db.tendersaucer.utils')
 
 
+FETCH_ALL_BATCH_SIZE = 1000
+
+
 def fetch_all(pool, query, params):
     conn = None
     cursor = None
@@ -11,7 +14,12 @@ def fetch_all(pool, query, params):
         conn = pool.get_connection()
         cursor = conn.cursor(dictionary=True)
         cursor.execute(query, params)
-        return cursor.fetchall() or []
+        while True:
+            rows = cursor.fetchmany(size=FETCH_ALL_BATCH_SIZE)
+            if not rows:
+                break
+            for row in rows:
+                yield row
     except Exception as e:
         logger.exception(e)
         raise e
@@ -76,10 +84,10 @@ def handle_list_params(query, params):
             if not isinstance(value, list):
                 value = list(value)
             list_value_params = []
-            for i in range(len(value)):
-                key_i = key + str(i)
-                new_params[key_i] = value[i]
-                list_value_params.append('%({})s'.format(key_i))
+            for index in range(len(value)):
+                key_index = key + str(index)
+                new_params[key_index] = value[index]
+                list_value_params.append('%({})s'.format(key_index))
             query = query.replace(
                 '%({})s'.format(key), ','.join(list_value_params))
         else:
