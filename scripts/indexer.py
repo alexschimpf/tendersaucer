@@ -88,7 +88,10 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
 
                     related_artist_ids = set()
                     related_artists = spotify_client.get_related_artists(artist_id=new_artist_id)
-
+                    for related_artist in related_artists:
+                        related_artist_id = related_artist['id']
+                        related_artist_ids.add(related_artist_id)
+                        artists_by_id[related_artist_id] = related_artist
                     all_related_artist_ids.update(related_artist_ids)
 
                     top_tracks = spotify_client.get_top_tracks(artist_id=new_artist_id)
@@ -96,13 +99,7 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
                         logger.info('Skipping... no top tracks')
                         continue
 
-                    # Index new artists in redis
                     logger.info(non_indexed_artist['name'])
-                    for related_artist in related_artists:
-                        related_artist_id = related_artist['id']
-                        related_artist_ids.add(related_artist_id)
-                        artists_by_id[related_artist_id] = related_artist
-
                     neo4j_client.index_artist(
                         artist=non_indexed_artist, related_artists=related_artists,
                         genres=non_indexed_artist.get('genres'))
@@ -120,56 +117,48 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
             logger.exception(e)
 
 
-def run_update(visited):
+def run_update():
     spotify_client = Spotify.get_basic_client()
 
-    for artist_id in neo4j_client.get_all_artist_ids():
+    artist_ids = neo4j_client.get_all_artist_ids()
+    for artist_id in artist_ids:
         try:
-            if artist_id not in visited:
-                visited.add(artist_id)
+            artist = spotify_client.get_artist(artist_id=artist_id)
+            if artist.get('id') != artist_id:
+                continue
 
-                artist = spotify_client.get_artist(artist_id=artist_id)
-                if artist.get('id') != artist_id:
-                    continue
+            logger.info('Updating: {}'.format(artist['name']))
 
-                logger.info('Updating artist: {}'.format(artist['name']))
+            related_artists = spotify_client.get_related_artists(artist_id=artist_id)
+            neo4j_client.index_artist(
+                artist=artist, related_artists=related_artists, genres=artist.get('genres'))
 
-                related_artists = spotify_client.get_related_artists(artist_id=artist_id)
-                neo4j_client.index_artist(
-                    artist=artist, related_artists=related_artists, genres=artist.get('genres'))
+            # Add top tracks to database
+            top_tracks = spotify_client.get_top_tracks(artist_id=artist_id)
+            if top_tracks:
+                top_track_ids = [top_track['id'] for top_track in top_tracks]
+                top_track_audio_features = spotify_client.get_audio_features_for_tracks(track_ids=top_track_ids)
+                TopTracks.insert_or_update_tracks(
+                    artist_id=artist_id, top_tracks=top_tracks, audio_features=top_track_audio_features)
 
-                # Add top tracks to database
-                top_tracks = spotify_client.get_top_tracks(artist_id=artist_id)
-                if top_tracks:
+            # Check for non-indexed related artists
+            for artist in related_artists:
+                artist_id = artist['id']
+                if not TopTracks.get_artists_with_tracks(artist_ids=[artist_id]):
+                    logger.info('Found new artist: {}'.format(artist['name']))
+
+                    related_artists_ = spotify_client.get_related_artists(artist_id=artist_id)
+                    top_tracks = spotify_client.get_top_tracks(artist_id=artist_id)
+                    if not top_tracks:
+                        continue
+
+                    neo4j_client.index_artist(
+                        artist=artist, related_artists=related_artists_, genres=artist.get('genres'))
+
                     top_track_ids = [top_track['id'] for top_track in top_tracks]
                     top_track_audio_features = spotify_client.get_audio_features_for_tracks(track_ids=top_track_ids)
                     TopTracks.insert_or_update_tracks(
                         artist_id=artist_id, top_tracks=top_tracks, audio_features=top_track_audio_features)
-
-                # Check for non-indexed related artists
-                for artist in related_artists:
-                    if not artist['popularity'] or not artist.get('genres'):
-                        continue
-
-                    artist_id = artist['id']
-                    if not neo4j_client.artist_exists(artist_id=artist_id):
-                        logger.info('Found new artist: {}'.format(artist['name']))
-
-                        related_artists_ = spotify_client.get_related_artists(artist_id=artist_id)
-                        if not related_artists_:
-                            continue
-
-                        top_tracks = spotify_client.get_top_tracks(artist_id=artist_id)
-                        if not top_tracks:
-                            continue
-
-                        neo4j_client.index_artist(
-                            artist=artist, related_artists=related_artists, genres=artist.get('genres'))
-
-                        top_track_ids = [top_track['id'] for top_track in top_tracks]
-                        top_track_audio_features = spotify_client.get_audio_features_for_tracks(track_ids=top_track_ids)
-                        TopTracks.insert_or_update_tracks(
-                            artist_id=artist_id, top_tracks=top_tracks, audio_features=top_track_audio_features)
         except Exception as e:
             logger.exception(e)
 
@@ -226,14 +215,14 @@ if __name__ == '__main__':
     if args.run_mode == 'update':
         args.num_workers = 1
 
-    _visited = utils.ConcurrentSet()
     with ThreadPoolExecutor(max_workers=args.num_workers) as executor:
         futures = []
         for _ in range(args.num_workers):
             if args.run_mode == 'discover':
+                _visited = utils.ConcurrentSet()
                 future = executor.submit(run_discover, _visited, args.artist_cache_size, args.search_time_limit,
                                          args.no_progress_time_limit, args.run_time_limit)
             elif args.run_mode == 'update':
-                future = executor.submit(run_update, _visited)
+                future = executor.submit(run_update)
             futures.append(future)
         wait(futures)
