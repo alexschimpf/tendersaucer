@@ -78,3 +78,23 @@ class Spotify(spotipy.Spotify):
             playlists = self.next(playlists)
 
         return user_playlist_artist_ids
+
+    def get_artists_from_user_saved_tracks(self):
+        artist_ids = set()
+        saved_tracks = self.current_user_saved_tracks()
+        while saved_tracks:
+            for track in saved_tracks['items']:
+                for artist in track['track']['artists']:
+                    if artist['id']:
+                        artist_ids.add(artist['id'])
+            saved_tracks = self.next(saved_tracks)
+
+        return artist_ids
+
+    def export_playlist(self, playlist_name, track_ids):
+        if not track_ids:
+            raise Exception('Playlist is empty')
+
+        spotify_user_id = self.me().get('id')
+        new_playlist = self.user_playlist_create(spotify_user_id, playlist_name)
+        self.user_playlist_add_tracks(spotify_user_id, new_playlist['id'], track_ids)
