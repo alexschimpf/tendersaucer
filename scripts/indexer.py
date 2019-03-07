@@ -77,7 +77,7 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
 
                 all_related_artist_ids = set()
 
-                # Get related artists from Redis for existing artists
+                # Get related artists from Neo4j for existing artists
                 for indexed_artist_id in indexed_artist_ids:
                     related_artists = neo4j_client.get_related_artists(artist_id=indexed_artist_id)
                     related_artist_ids = [related_artist['id'] for related_artist in related_artists]
@@ -90,10 +90,6 @@ def run_discover(visited, artist_cache_size, search_time_limit=None, no_progress
                     related_artists = spotify_client.get_related_artists(artist_id=new_artist_id)
 
                     all_related_artist_ids.update(related_artist_ids)
-
-                    if not non_indexed_artist['popularity']:
-                        logger.info('Skipping... 0 popularity')
-                        continue
 
                     top_tracks = spotify_client.get_top_tracks(artist_id=new_artist_id)
                     if not top_tracks:
