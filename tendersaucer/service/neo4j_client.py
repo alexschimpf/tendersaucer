@@ -21,7 +21,7 @@ def get_related_artists(artist_id, max_num_hops=1):
     ''' % (max_num_hops, artist_id)
     result = _get_graph().run(query)
     return list(map(lambda artist: {
-        'id': artist['idd'],
+        'id': artist['id'],
         'popularity': artist['popularity']
     }, result))
 
