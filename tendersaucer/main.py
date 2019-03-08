@@ -3,11 +3,13 @@ import time
 import redis
 import datetime
 from flask_session import Session
-from flask import Flask, request, session, redirect, jsonify
+from celery.result import AsyncResult
 from tendersaucer.config import APP_CONFIG
-from tendersaucer.utils import catch_errors
 from tendersaucer.service import redis_client
 from tendersaucer.service.spotify_client import Spotify
+from flask import Flask, request, session, redirect, jsonify
+from tendersaucer.utils import catch_errors, spotfiy_auth_required, delimited_list, CustomException
+from tendersaucer.tasks import app as celery_app, build_genre_playlist, build_personalized_playlist
 
 
 app = Flask(__name__, template_folder='static')
@@ -58,6 +60,57 @@ def spotify_callback():
     session['spotify_access_token_expiry_time'] = token_info['expires_at']
 
     return redirect('/')
+
+
+@app.route('/build_playlist', methods=['GET'])
+@spotfiy_auth_required
+@catch_errors
+def build_playlist():
+    spotify_access_token = session['spotify_access_token']
+
+    playlist_name = request.args.get('playlist_name')
+    time_ranges = request.arg.get('time_ranges', delimited_list)
+    artist_popularity_range = request.args.get('artist_popularity_range', delimited_list)
+    track_release_year_range = request.args.get('track_release_year_range', delimited_list)
+    track_danceability_range = request.args.get('track_danceability_range', delimited_list)
+    track_tempo_range = request.args.get('track_tempo_range', delimited_list)
+    included_genres = request.args.get('included_genres', delimited_list)
+    excluded_genres = request.args.get('excluded_genres', delimited_list)
+    exclude_familiar_artists = request.args.get('exclude_familiar_artists', bool)
+
+    max_search_depth = request.args.get('max_search_depth', int)
+    if max_search_depth > 3:
+        raise CustomException('max_search_depth must be <= 3')
+
+    playlist_type = request.args.get('playlist_type')
+    if playlist_type == 'genre':
+        task = build_genre_playlist
+        result = task.delay(
+            spotify_access_token, playlist_name, time_ranges, artist_popularity_range,
+            track_release_year_range, track_danceability_range, track_tempo_range, included_genres,
+            excluded_genres, exclude_familiar_artists, max_search_depth)
+    elif playlist_type == 'personalized':
+        task = build_personalized_playlist
+        result = task.delay(
+            spotify_access_token, playlist_name, included_genres, artist_popularity_range,
+            track_release_year_range, track_danceability_range, track_tempo_range, exclude_familiar_artists)
+    else:
+        raise CustomException('Invalid playlist_type')
+
+    return jsonify(task_id=result.task_id)
+
+
+@app.route('/task/<task_id>/status', methods=['GET'])
+@catch_errors
+def get_task_status(task_id):
+    progress = 0.0
+    result = AsyncResult(id=task_id, app=celery_app)
+    if result.state == 'IN_PROGRESS':
+        progress = result.result['value']
+    elif result.state in ('FAILURE', 'SUCCESS'):
+        progress = 100.0
+
+    return jsonify(progress=progress)
 
 
 if APP_CONFIG['environment'] == 'dev':
