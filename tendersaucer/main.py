@@ -81,6 +81,8 @@ def build_playlist():
     max_search_depth = request.args.get('max_search_depth', int)
     if max_search_depth > 3:
         raise CustomException('max_search_depth must be <= 3')
+    if max_search_depth == 0 and exclude_familiar_artists:
+        raise CustomException('You cannot both exclude familiar artists and have max_search_depth = 0')
 
     playlist_type = request.args.get('playlist_type')
     if playlist_type == 'genre':
