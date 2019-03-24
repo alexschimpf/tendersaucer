@@ -1,7 +1,7 @@
 {
-    "name": "spotify-playlist-builder",
+    "name": "tendersaucer",
     "version": "1.0.0",
-    "description": "Spotify Playlist Builder",
+    "description": "Tendersaucer",
     "main": "app.js",
     "directories": {
         "test": "tests"
@@ -48,22 +48,22 @@
         "webpack-livereload-plugin": "^2.1.1"
     },
     "scripts": {
-        "copy-to-static": "cpx \"dist/*.{html,css,js,map,png,svg,jpg,jpeg,gif}\" static",
-        "copy-to-static:dev": "cpx \"dist/*.{html,css,js,map,png,svg,jpg,jpeg,gif}\" static --watch",
+        "copy-to-static": "cpx \"tendersaucer/dist/*.{html,css,js,map,png,svg,jpg,jpeg,gif}\" tendersaucer/static",
+        "copy-to-static:dev": "cpx \"tendersaucer/dist/*.{html,css,js,map,png,svg,jpg,jpeg,gif}\" tendersaucer/static --watch",
         "build:prod": "NODE_ENV=production webpack --progress --bail",
         "build:dev": "NODE_ENV=development webpack --progress --watch",
         "dev": "npm run clean && concurrently \"npm run build:dev\" \"npm run copy-to-static:dev\"",
         "prod": "npm run clean && npm run build:prod && npm run copy-to-static",
-        "clean": "rm -f static/_* && rm -f dist/*"
+        "clean": "rm -f tendersaucer/static/_* && rm -f tendersaucer/dist/*"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/alexschimpf/Spotify-Playlist-Builder"
+        "url": "git+https://github.com/alexschimpf/tendersaucer"
     },
     "author": "",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/alexschimpf/Spotify-Playlist-Builder/issues"
+        "url": "https://github.com/alexschimpf/tendersaucer/issues"
     },
     "homepage": "https://tendersaucer.com"
 }

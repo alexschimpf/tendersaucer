@@ -1,4 +1,5 @@
 import os
+import json
 import time
 import redis
 import datetime
@@ -7,7 +8,7 @@ from celery.result import AsyncResult
 from tendersaucer.config import APP_CONFIG
 from tendersaucer.service.spotify_client import Spotify
 from tendersaucer.service import redis_client, neo4j_client
-from flask import Flask, request, session, redirect, jsonify
+from flask import Flask, request, session, redirect, jsonify, render_template
 from tendersaucer.tasks import app as celery_app, build_genre_playlist, build_personalized_playlist
 from tendersaucer.utils import catch_errors, spotfiy_auth_required, delimited_list, TendersaucerException
 
@@ -24,42 +25,12 @@ app.config.update({
 Session(app)
 
 
-@app.route('/logout', methods=['GET'])
+@app.route('/', methods=['GET'])
 @catch_errors
-def logout():
-    session.clear()
-    return redirect('/')
-
-
-@app.route('/get_spotify_auth', methods=['GET'])
-@catch_errors
-def get_spotify_auth():
-    curr_time = time.time()
-    oauth_client = Spotify.get_oauth_client()
-    if not session.get('spotify_access_token'):
-        return redirect(oauth_client.get_authorize_url())
-    elif session.get('spotify_access_token_expiry_time') <= curr_time:
-        refresh_token = session.get('spotify_refresh_token')
-        token_info = oauth_client.refresh_access_token(refresh_token=refresh_token)
-        session['spotify_access_token'] = token_info['access_token']
-        session['spotify_access_token_expiry_time'] = token_info['expires_at']
-        if 'refresh_token' in token_info:
-            session['spotify_refresh_token'] = token_info['refresh_token']
-
-    return redirect('/')
-
-
-@app.route('/spotify_callback', methods=['GET'])
-@catch_errors
-def spotify_callback():
-    auth_client = Spotify.get_oauth_client()
-    spotify_access_code = auth_client.parse_response_code(request.url)
-    token_info = auth_client.get_access_token(spotify_access_code)
-    session['spotify_access_token'] = token_info['access_token']
-    session['spotify_refresh_token'] = token_info['refresh_token']
-    session['spotify_access_token_expiry_time'] = token_info['expires_at']
-
-    return redirect('/')
+def index():
+    genres = neo4j_client.get_all_genres()
+    is_logged_in = 'true' if session.get('spotify_access_token') else 'false'
+    return render_template('_index.html', genres=json.dumps(genres), is_logged_in=is_logged_in)
 
 
 @app.route('/build_playlist', methods=['GET'])
@@ -102,13 +73,6 @@ def build_playlist():
     return jsonify(task_id=result.task_id)
 
 
-@app.route('/genres', methods=['GET'])
-@catch_errors
-def get_genres():
-    genres = neo4j_client.get_all_genres()
-    return jsonify(genres=genres)
-
-
 @app.route('/task/<task_id>/status', methods=['GET'])
 @catch_errors
 def get_task_status(task_id):
@@ -120,6 +84,44 @@ def get_task_status(task_id):
         progress = 100.0
 
     return jsonify(progress=progress)
+
+
+@app.route('/get_spotify_auth', methods=['GET'])
+@catch_errors
+def get_spotify_auth():
+    curr_time = time.time()
+    oauth_client = Spotify.get_oauth_client()
+    if not session.get('spotify_access_token'):
+        return redirect(oauth_client.get_authorize_url())
+    elif session.get('spotify_access_token_expiry_time') <= curr_time:
+        refresh_token = session.get('spotify_refresh_token')
+        token_info = oauth_client.refresh_access_token(refresh_token=refresh_token)
+        session['spotify_access_token'] = token_info['access_token']
+        session['spotify_access_token_expiry_time'] = token_info['expires_at']
+        if 'refresh_token' in token_info:
+            session['spotify_refresh_token'] = token_info['refresh_token']
+
+    return redirect('/')
+
+
+@app.route('/spotify_callback', methods=['GET'])
+@catch_errors
+def spotify_callback():
+    auth_client = Spotify.get_oauth_client()
+    spotify_access_code = auth_client.parse_response_code(request.url)
+    token_info = auth_client.get_access_token(spotify_access_code)
+    session['spotify_access_token'] = token_info['access_token']
+    session['spotify_refresh_token'] = token_info['refresh_token']
+    session['spotify_access_token_expiry_time'] = token_info['expires_at']
+
+    return redirect('/')
+
+
+@app.route('/logout', methods=['GET'])
+@catch_errors
+def logout():
+    session.clear()
+    return redirect('/')
 
 
 if APP_CONFIG['environment'] == 'dev':
