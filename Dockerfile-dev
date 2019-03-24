@@ -1,0 +1,7 @@
+FROM python:3.6
+ENV PYTHONPATH /tendersaucer
+COPY ./requirements.txt /tendersaucer/requirements.txt
+WORKDIR /tendersaucer
+RUN pip install -U pip && \
+    pip install -r requirements.txt
+COPY . /tendersaucerZ

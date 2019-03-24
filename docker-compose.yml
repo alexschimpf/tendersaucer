@@ -1,0 +1,58 @@
+version: '3'
+services:
+    tendersaucer_celery:
+        build:
+            context: .
+            dockerfile: Dockerfile-dev
+        command: celery -A tasks worker --loglevel=info
+        container_name: tendersaucer_celery
+        depends_on:
+            - tendersaucer_redis
+        restart: on-failure
+        networks:
+            - tendersaucer_network
+        volumes:
+            - ".:/tendersaucer"
+    tendersaucer_mysql:
+        image: "mysql:5.6"
+        container_name: tendersaucer_mysql
+        restart: on-failure
+        ports:
+            - "5307:3306"
+        networks:
+            - tendersaucer_network
+        volumes:
+            - ./sql:/opt/sql
+            - ./docker/mysql:/docker-entrypoint-initdb.d
+            - mysql-volume:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+    tendersaucer_redis:
+        image: "redis:3.2.4"
+        container_name: tendersaucer_redis
+        ports:
+            - "6380:6379"
+        networks:
+            - tendersaucer_network
+        volumes:
+            - redis-volume:/data
+    tendersaucer_neo4j:
+        image: "neo4j:3.5.3"
+        container_name: tendersaucer_neo4j
+        ports:
+            - "7687:7687"
+            - "7474:7474"
+            - "7473:7473"
+        networks:
+            - tendersaucer_network
+        volumes:
+            - neo4j-volume:/data
+            - neo4j-logs-volume:/logs
+networks:
+    tendersaucer_network:
+        external: true
+volumes:
+    redis-volume:
+    mysql-volume:
+    neo4j-volume:
+    neo4j-logs-volume:

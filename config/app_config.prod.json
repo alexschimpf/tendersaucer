@@ -1,8 +1,8 @@
 {
     "environment": "dev",
     "celery": {
-        "backend": "redis://localhost:6379/0",
-        "broker": "pyamqp://guest@localhost//"
+        "backend": "redis://localhost:6379/1",
+        "broker": "redis://localhost:6379/2"
     },
     "mysql": {
         "host": "localhost",
@@ -13,28 +13,22 @@
         "pool_size": 5
     },
     "redis": {
-        "spotify": {
-            "host": "localhost",
-            "port": 6379,
-            "db": 1,
-            "max_connections": 1000
-        },
         "session": {
             "host": "localhost",
             "port": 6379,
-            "db": 2,
+            "db": 0,
             "max_connections": 1000
         }
+    },
+    "neo4j": {
+        "user": "neo4j",
+        "password": null,
+        "uri": "bolt://localhost:7687"
     },
     "spotify": {
         "client_id": null,
         "client_secret": null,
         "redirect_url": "http://0.0.0.0:5000/spotify_callback"
-    },
-    "neo4j": {
-        "user": "neo4j",
-        "password": "",
-        "uri": "bolt://localhost:7687"
     },
     "logging": {
         "version": 1,

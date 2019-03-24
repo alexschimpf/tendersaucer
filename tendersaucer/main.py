@@ -8,7 +8,7 @@ from tendersaucer.config import APP_CONFIG
 from tendersaucer.service import redis_client
 from tendersaucer.service.spotify_client import Spotify
 from flask import Flask, request, session, redirect, jsonify
-from tendersaucer.utils import catch_errors, spotfiy_auth_required, delimited_list, CustomException
+from tendersaucer.utils import catch_errors, spotfiy_auth_required, delimited_list, TendersaucerException
 from tendersaucer.tasks import app as celery_app, build_genre_playlist, build_personalized_playlist
 
 
@@ -80,9 +80,9 @@ def build_playlist():
 
     max_search_depth = request.args.get('max_search_depth', int)
     if max_search_depth > 3:
-        raise CustomException('max_search_depth must be <= 3')
+        raise TendersaucerException('max_search_depth must be <= 3')
     if max_search_depth == 0 and exclude_familiar_artists:
-        raise CustomException('You cannot both exclude familiar artists and have max_search_depth = 0')
+        raise TendersaucerException('You cannot both exclude familiar artists and have max_search_depth = 0')
 
     playlist_type = request.args.get('playlist_type')
     if playlist_type == 'genre':
@@ -97,7 +97,7 @@ def build_playlist():
             spotify_access_token, playlist_name, included_genres, artist_popularity_range,
             track_release_year_range, track_danceability_range, track_tempo_range, exclude_familiar_artists)
     else:
-        raise CustomException('Invalid playlist_type')
+        raise TendersaucerException('Invalid playlist_type')
 
     return jsonify(task_id=result.task_id)
 

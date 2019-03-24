@@ -1,8 +1,6 @@
-CREATE DATABASE `tendersaucer`;
+DROP TABLE IF EXISTS `tendersaucer`.`top_tracks`;
 
-USE `tendersaucer`;
-
-CREATE TABLE `top_tracks` (
+CREATE TABLE `tendersaucer`.`top_tracks` (
     `id` VARCHAR(50),
     `artist_id` VARCHAR(50) NOT NULL,
     `release_year` SMALLINT DEFAULT NULL,

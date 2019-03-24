@@ -27,7 +27,7 @@ class ConcurrentSet(set):
         self.lock.release()
 
 
-class CustomException(Exception):
+class TendersaucerException(Exception):
     pass
 
 
@@ -38,7 +38,7 @@ def catch_errors(func):
             result = func(*args, **kwargs)
         except Exception as e:
             logger.exception(e)
-            if isinstance(e, CustomException):
+            if isinstance(e, TendersaucerException):
                 return Response(str(e), 400)
             else:
                 return Response('Unexpected error', 500)
