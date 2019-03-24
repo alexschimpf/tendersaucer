@@ -1,8 +1,8 @@
 const path = require('path');
 
 const ROOT = path.resolve(__dirname);
-const STATIC_DIR = './static';
-const DIST_DIR = './dist';
+const STATIC_DIR = './tendersaucer/static';
+const DIST_DIR = './tendersaucer/dist';
 const ENV = process.env.NODE_ENV;
 const IS_PROD = ENV == 'production';
 
@@ -14,8 +14,8 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const LiveReloadPlugin = require('webpack-livereload-plugin');
 
 function dir(args) {
-  args = Array.prototype.slice.call(arguments, 0);
-  return path.join.apply(path, [ROOT].concat(args));
+    args = Array.prototype.slice.call(arguments, 0);
+    return path.join.apply(path, [ROOT].concat(args));
 }
 
 module.exports = function (options) {
@@ -34,7 +34,7 @@ module.exports = function (options) {
             filename: IS_PROD ? '_[name].[hash].bundle.min.js' : '_[name].bundle.min.js',
             sourceMapFilename: '_[name].map',
             chunkFilename: '_[id].chunk.js',
-            library: 'spotify_playlist_builder_[name]',
+            library: 'tendersaucer_[name]',
             libraryTarget: 'var'
         },
         module: {
@@ -84,7 +84,7 @@ module.exports = function (options) {
                 inject: 'body'
             }),
             IS_PROD ? new MiniCssExtractPlugin({
-                filename: "_[name].css",
+                filename: "_[name].[hash].css",
                 chunkFilename: "_[id].css"
             }) : null
         ].filter(Boolean),
@@ -94,11 +94,11 @@ module.exports = function (options) {
                 minChunks: 2
             },
             minimizer: [
-//                new UglifyJsPlugin({
-//                    cache: true,
-//                    parallel: true,
-//                    sourceMap: true
-//                }),
+                new UglifyJsPlugin({
+                    cache: true,
+                    parallel: true,
+                    sourceMap: true
+                }),
                 new OptimizeCSSAssetsPlugin({})
             ]
         },
