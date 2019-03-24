@@ -8,8 +8,8 @@ const IS_PROD = ENV == 'production';
 
 const ExtractTextWebpackPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
+const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const LiveReloadPlugin = require('webpack-livereload-plugin');
 
@@ -52,7 +52,7 @@ module.exports = function (options) {
                 {
                     test: /\.css$/,
                     use: [
-                        IS_PROD ? MiniCssExtractPlugin.loader :'style-loader',
+                        IS_PROD ? MiniCSSExtractPlugin.loader :'style-loader',
                         'css-loader'
                     ]
                 },
@@ -60,7 +60,7 @@ module.exports = function (options) {
                     test: /\.scss$/,
                     exclude: [/node_modules/],
                     use: [
-                        { loader: IS_PROD ? MiniCssExtractPlugin.loader : 'style-loader' },
+                        { loader: IS_PROD ? MiniCSSExtractPlugin.loader : 'style-loader' },
                         { loader: 'css-loader', options: { sourceMap: true } },
                         { loader: 'sass-loader', options: { sourceMap: true } }
                     ]
@@ -83,7 +83,7 @@ module.exports = function (options) {
                 chunksSortMode: 'dependency',
                 inject: 'body'
             }),
-            IS_PROD ? new MiniCssExtractPlugin({
+            IS_PROD ? new MiniCSSExtractPlugin({
                 filename: "_[name].[hash].css",
                 chunkFilename: "_[id].css"
             }) : null
@@ -94,7 +94,7 @@ module.exports = function (options) {
                 minChunks: 2
             },
             minimizer: [
-                new UglifyJsPlugin({
+                new UglifyJSPlugin({
                     cache: true,
                     parallel: true,
                     sourceMap: true

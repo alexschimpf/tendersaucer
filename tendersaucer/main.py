@@ -5,11 +5,11 @@ import datetime
 from flask_session import Session
 from celery.result import AsyncResult
 from tendersaucer.config import APP_CONFIG
-from tendersaucer.service import redis_client
 from tendersaucer.service.spotify_client import Spotify
+from tendersaucer.service import redis_client, neo4j_client
 from flask import Flask, request, session, redirect, jsonify
-from tendersaucer.utils import catch_errors, spotfiy_auth_required, delimited_list, TendersaucerException
 from tendersaucer.tasks import app as celery_app, build_genre_playlist, build_personalized_playlist
+from tendersaucer.utils import catch_errors, spotfiy_auth_required, delimited_list, TendersaucerException
 
 
 app = Flask(__name__, template_folder='static')
@@ -33,7 +33,7 @@ def logout():
 
 @app.route('/get_spotify_auth', methods=['GET'])
 @catch_errors
-def spotify_authentication():
+def get_spotify_auth():
     curr_time = time.time()
     oauth_client = Spotify.get_oauth_client()
     if not session.get('spotify_access_token'):
@@ -100,6 +100,13 @@ def build_playlist():
         raise TendersaucerException('Invalid playlist_type')
 
     return jsonify(task_id=result.task_id)
+
+
+@app.route('/genres', methods=['GET'])
+@catch_errors
+def get_genres():
+    genres = neo4j_client.get_all_genres()
+    return jsonify(genres=genres)
 
 
 @app.route('/task/<task_id>/status', methods=['GET'])
