@@ -1,0 +1,58 @@
+h3 {
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 400;
+}
+
+.checkbox-label {
+    font-weight: 100;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.param-header {
+    margin-right: 20px;
+    float: left;
+    font-size: 16px;
+}
+
+.btn {
+    background-color: white;
+    color: black;
+    padding: 14px 28px;
+    font-size: 16px;
+    cursor: pointer;
+    border-color: salmon;
+    border-width: 1px;
+    border-radius: 5px;
+    font-weight: 400;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.default {
+    color: black;
+    margin-top: 20px;
+}
+
+.default:hover {
+    background: #EFEFEF;
+}
+
+.playlist-name {
+    margin-bottom: 40px;
+    width: 208px;
+    height: 40;
+    text-align: center;
+    border-style: solid;
+    font-size: 18px;
+    border-width: 1px;
+    border-radius: 5px;
+    border-color: salmon;
+    font-weight: 100;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+div.slider {
+    width: 250px;
+    display: inline-block;
+    margin-top: 5px;
+
+}

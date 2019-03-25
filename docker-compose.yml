@@ -1,18 +1,5 @@
 version: '3'
 services:
-    tendersaucer_celery:
-        build:
-            context: .
-            dockerfile: Dockerfile-dev
-        command: celery -A tasks worker --loglevel=info
-        container_name: tendersaucer_celery
-        depends_on:
-            - tendersaucer_redis
-        restart: on-failure
-        networks:
-            - tendersaucer_network
-        volumes:
-            - ".:/tendersaucer"
     tendersaucer_mysql:
         image: "mysql:5.6"
         container_name: tendersaucer_mysql
