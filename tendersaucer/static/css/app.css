@@ -1,6 +1,7 @@
 h3 {
     font-family: 'Ubuntu', sans-serif;
     font-weight: 400;
+    font-size: 16px;
 }
 
 .checkbox-label {
@@ -18,12 +19,12 @@ h3 {
     background-color: white;
     color: black;
     padding: 14px 28px;
-    font-size: 16px;
+    font-size: 12px;
     cursor: pointer;
     border-color: salmon;
     border-width: 1px;
     border-radius: 5px;
-    font-weight: 400;
+    font-weight: 100;
     font-family: 'Ubuntu', sans-serif;
 }
 
@@ -51,8 +52,31 @@ h3 {
 }
 
 div.slider {
-    width: 250px;
+    width: 400px;
     display: inline-block;
     margin-top: 5px;
+}
 
+div.react-select__control:hover {
+    border-color: salmon;
+    cursor: pointer;
+}
+
+div.react-select__control--is-focused {
+    border-color: salmon;
+    cursor: pointer;
+}
+
+div.react-select__control--menu-is-open {
+    border-color: salmon;
+    cursor: pointer;
+}
+
+div.react-select__option:hover {
+    background-color: salmon;
+}
+
+div.react-select__multi-value__remove:hover {
+    background-color: salmon;
+    color: black;
 }

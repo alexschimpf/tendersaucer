@@ -34,7 +34,6 @@ Seed Types
     - Favorite artists
         - Short/Medium/Long-term
             - Can choose multiple
-        - Genres to include
         - Artist popularity range
         - Track danceability range
         - Track tempo range
@@ -52,5 +51,3 @@ Questions
     - Their top artists (short/medium/long-term)
     - Avails - but Is this feasible?
 - Use react native for mobile app?
-
-

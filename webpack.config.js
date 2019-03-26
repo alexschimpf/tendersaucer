@@ -22,7 +22,7 @@ module.exports = function (options) {
     return {
         mode: ENV,
         entry: {
-            'app': STATIC_DIR + '/app.jsx'
+            'app': STATIC_DIR + '/App.jsx'
         },
         resolve: {
             extensions: ['.js', '.jsx', '.json'],
@@ -77,7 +77,7 @@ module.exports = function (options) {
         },
         plugins: [
             new HtmlWebpackPlugin({
-                template: STATIC_DIR + '/index.html',
+                template: STATIC_DIR + '/html/index.html',
                 filename: '_index.html',
                 chunks: ['app'],
                 chunksSortMode: 'dependency',
