@@ -15,6 +15,13 @@ h3 {
     font-size: 16px;
 }
 
+.param-header-outside-table {
+    margin-right: 20px;
+    float: left;
+    font-size: 16px;
+    margin-left: 3px;
+}
+
 .btn {
     background-color: white;
     color: black;
@@ -31,6 +38,7 @@ h3 {
 .default {
     color: black;
     margin-top: 20px;
+    outline: none;
 }
 
 .default:hover {
@@ -43,7 +51,7 @@ h3 {
     height: 40;
     text-align: center;
     border-style: solid;
-    font-size: 18px;
+    font-size: 12px;
     border-width: 1px;
     border-radius: 5px;
     border-color: salmon;

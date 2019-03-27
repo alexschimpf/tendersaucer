@@ -53,7 +53,7 @@ class GenreCriteria extends React.Component {
                     <tbody>
                         <tr>
                             <th>
-                                <h3 className="param-header">ARTIST POPULARITY</h3>
+                                <h3 className="param-header">Artist Popularity</h3>
                             </th>
                             <th>
                                 <Range className="slider" defaultValue={[0, 100]} min={0} max={100}
@@ -62,7 +62,7 @@ class GenreCriteria extends React.Component {
                             </th>
                         </tr>
                             <th>
-                                <h3 className="param-header">TRACK RELEASE YEAR</h3>
+                                <h3 className="param-header">Track Release Year</h3>
                             </th>
                             <th>
                                 <Range className="slider" defaultValue={[1900, 2019]} min={1900} max={2019}
@@ -71,7 +71,7 @@ class GenreCriteria extends React.Component {
                             </th>
                         <tr>
                             <th>
-                                <h3 className="param-header">TRACK TEMPO</h3>
+                                <h3 className="param-header">Track Tempo</h3>
                             </th>
                             <th>
                                 <Range className="slider" defaultValue={[0, 250]} min={0} max={250}
@@ -81,7 +81,7 @@ class GenreCriteria extends React.Component {
                         </tr>
                         <tr>
                             <th>
-                                <h3 className="param-header">TRACK DANCEABILITY</h3>
+                                <h3 className="param-header">Track Danceability</h3>
                             </th>
                             <th>
                                 <Range className="slider" defaultValue={[0, 100]} min={0} max={100}
@@ -92,7 +92,7 @@ class GenreCriteria extends React.Component {
                     </tbody>
                 </table>
 
-                <h3 className="param-header" style={{marginRight: '140px'}}>GENRES</h3>
+                <h3 className="param-header-outside-table" style={{marginRight: '113px'}}>Genres</h3>
                 <WindowedSelect classNamePrefix="react-select" styles={SELECT_STYLES}
                     options={this.props.genres} isMulti="true" placeholder="ENTER GENRE NAME"
                     menuPlacement="bottom"/>

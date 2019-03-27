@@ -3,7 +3,7 @@ class TopBar extends React.Component {
         return (
             <div style={{
                 backgroundImage: 'linear-gradient(to right, darksalmon, salmon)',
-                margin: '-10px', height: '80px', marginBottom: '60px'}}>
+                margin: '-10px', height: '80px', marginBottom: '40px'}}>
                 <img src="static/images/tendersaucer.jpg" style={{
                     width: '80px',
                     paddingTop: '10px', float: 'left',
@@ -14,7 +14,7 @@ class TopBar extends React.Component {
                 <h3 style={{
                     display: 'inline-block', fontSize: '20px',
                     color: 'white', float: 'right', paddingTop: '30px',
-                    margin: '0', marginRight: '40px'}}>BUILD PLAYLIST</h3>
+                    margin: '0', marginRight: '40px'}}>Build Playlist</h3>
             </div>
         )
     }
