@@ -100,7 +100,7 @@ h3 {
     outline: none;
 }
 
-.build-playlist-btn {
+.top-bar-btn {
     outline: none;
     background: none;
     color: white;
@@ -114,7 +114,7 @@ h3 {
     width: 200px;
 }
 
-.build-playlist-btn:hover {
+.top-bar-btn:hover {
     background: lightsalmon;
     cursor: pointer;
 }
@@ -144,6 +144,16 @@ h3 {
     font-weight: 100;
     font-family: 'Ubuntu', sans-serif;
     outline: none;
+}
+
+.pre-login-msg-div {
+    text-align: center;
+    width: 100%;
+}
+
+.pre-login-msg {
+    width: 40%;
+    margin: 0 auto;
 }
 
 div.slider {

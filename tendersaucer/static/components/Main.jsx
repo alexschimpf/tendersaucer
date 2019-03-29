@@ -53,8 +53,8 @@ class Main extends React.Component {
                             </tr>
                         </tbody>
                     </table> :
-                    <div style={{textAlign: 'center', width: '100%'}}>
-                        <h3 style={{width: '40%', margin: '0 auto'}}>Tendersaucer let's you generate custom Spotify playlists based on different criteria like genre, artist popularity, tempo, etc. Please login to your Spotify account to continue.</h3>
+                    <div className="pre-login-msg-div">
+                        <h3 className="pre-login-msg">Tendersaucer let's you generate custom Spotify playlists based on different criteria like genre, artist popularity, tempo, etc. Please login to your Spotify account to continue.</h3>
                     </div>
                 }
             </div>

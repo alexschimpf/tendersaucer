@@ -5,10 +5,9 @@ class TopBar extends React.Component {
                 <img src="static/images/tendersaucer.jpg" className="top-bar-logo"></img>
                 <h3 className="top-bar-title">TENDERSAUCER</h3>
                 { IS_LOGGED_IN ?
-                    <button className="build-playlist-btn">Build Playlist</button> :
-                    <button className="build-playlist-btn">Login</button>
+                    <button className="top-bar-btn">Build Playlist</button> :
+                    <button className="top-bar-btn" onClick={() => location.href = '/get_spotify_auth'}>Login</button>
                 }
-
             </div>
         )
     }
