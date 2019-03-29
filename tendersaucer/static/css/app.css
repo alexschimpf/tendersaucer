@@ -19,7 +19,7 @@ h3 {
 .criteria-section {
     width: 50%;
     float: right;
-    margin-right: 14%;
+    margin-right: 15%;
 }
 
 .top-bar-div {
@@ -122,13 +122,13 @@ h3 {
 .artist-time-range-first-btn {
     font-size: 12px;
     margin-left: -124px;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .artist-time-range-btn {
     font-size: 12px;
     margin-left: 10px;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .playlist-name {
