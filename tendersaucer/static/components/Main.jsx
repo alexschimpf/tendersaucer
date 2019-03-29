@@ -1,18 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
 import { Spring } from 'react-spring/renderprops';
 import axios from 'axios';
-import './css/app.css';
-import './html/index.html';
-import TopBar from './components/TopBar';
-import SideBar from './components/SideBar';
-import GenreCriteria from './components/GenreCriteria';
-import FavoriteArtistsCriteria from './components/FavoriteArtistsCriteria';
+import TopBar from './TopBar';
+import SideBar from './SideBar';
+import GenreCriteria from './GenreCriteria';
+import FavoriteArtistsCriteria from './FavoriteArtistsCriteria';
 
-
-if (window.location.hash) {
-    window.location = window.location.href.split('#')[0];
-}
 
 const GENRE_OPTIONS = [];
 for (let genre of GENRES) {
@@ -71,9 +63,4 @@ class Main extends React.Component {
     }
 }
 
-ReactDOM.render(
-    <div>
-        <Main />
-    </div>,
-    document.getElementById('root')
-);
+export default Main;

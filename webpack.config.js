@@ -22,7 +22,7 @@ module.exports = function (options) {
     return {
         mode: ENV,
         entry: {
-            'app': STATIC_DIR + '/App.jsx'
+            'app': STATIC_DIR + '/app.js'
         },
         resolve: {
             extensions: ['.js', '.jsx', '.json'],

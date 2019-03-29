@@ -61,6 +61,7 @@ class GenreCriteria extends React.Component {
                                     railStyle={{backgroundColor: 'salmon'}} allowCross={false}/>
                             </th>
                         </tr>
+                        <tr>
                             <th>
                                 <h3 className="param-header">Track Release Year</h3>
                             </th>
@@ -69,6 +70,7 @@ class GenreCriteria extends React.Component {
                                     handleStyle={{borderColor: 'salmon'}} trackStyle={[{backgroundColor: 'salmon'}, {backgroundColor: 'salmon'}]}
                                     railStyle={{backgroundColor: 'salmon'}} allowCross={false}/>
                             </th>
+                        </tr>
                         <tr>
                             <th>
                                 <h3 className="param-header">Track Tempo</h3>
@@ -94,7 +96,7 @@ class GenreCriteria extends React.Component {
 
                 <h3 className="param-header-outside-table" style={{marginRight: '113px'}}>Genres</h3>
                 <WindowedSelect classNamePrefix="react-select" styles={SELECT_STYLES}
-                    options={this.props.genres} isMulti="true" placeholder="ENTER GENRE NAME"
+                    options={this.props.genres} isMulti="true" placeholder="Enter genre name"
                     menuPlacement="bottom"/>
             </div>
         )

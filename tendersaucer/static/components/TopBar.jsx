@@ -11,10 +11,7 @@ class TopBar extends React.Component {
                 <h3 style={{
                     display: 'inline-block', margin: '0', padding: '20px',
                     fontSize: '40px', color: 'white', paddingLeft: '10px'}}>TENDERSAUCER</h3>
-                <h3 style={{
-                    display: 'inline-block', fontSize: '20px',
-                    color: 'white', float: 'right', paddingTop: '30px',
-                    margin: '0', marginRight: '40px'}}>Build Playlist</h3>
+                <button className="build-playlist-btn">Build Playlist</button>
             </div>
         )
     }

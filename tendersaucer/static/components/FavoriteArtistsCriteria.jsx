@@ -44,6 +44,7 @@ class FavoriteArtistsCriteria extends React.Component {
                                     railStyle={{backgroundColor: 'salmon'}} allowCross={false}/>
                             </th>
                         </tr>
+                        <tr>
                             <th>
                                 <h3 className="param-header">Track Release Year</h3>
                             </th>
@@ -52,6 +53,7 @@ class FavoriteArtistsCriteria extends React.Component {
                                     handleStyle={{borderColor: 'salmon'}} trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
                                     railStyle={{backgroundColor: 'salmon'}} allowCross={false}/>
                             </th>
+                        </tr>
                         <tr>
                             <th>
                                 <h3 className="param-header">Track Tempo</h3>
