@@ -3,7 +3,7 @@ class SideBar extends React.Component {
         super(props);
 
         this.state = {
-            playlistType: 'genre'
+            playlistType: 'favorite_artists'
         };
 
         this.onPlaylistTypeChanged = this.onPlaylistTypeChanged.bind(this);

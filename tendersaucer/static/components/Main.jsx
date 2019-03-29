@@ -19,7 +19,7 @@ class Main extends React.Component {
         super(props);
 
         this.state = {
-            playlistType: 'genre'
+            playlistType: 'favorite_artists'
         };
 
         this.onPlaylistTypeChanged = this.onPlaylistTypeChanged.bind(this);
@@ -35,23 +35,28 @@ class Main extends React.Component {
         return (
             <div>
                 <TopBar />
-                <table className="main-table">
-                    <tbody>
-                        <tr>
-                            <th className="side-bar-section">
-                                <SideBar onPlaylistTypeChanged={this.onPlaylistTypeChanged} />
-                            </th>
+                { IS_LOGGED_IN ?
+                    <table className="main-table">
+                        <tbody>
+                            <tr>
+                                <th className="side-bar-section">
+                                    <SideBar onPlaylistTypeChanged={this.onPlaylistTypeChanged} />
+                                </th>
 
-                            <th className="criteria-section">
-                                {
-                                    this.state.playlistType == 'genre' ?
-                                        <GenreCriteria genres={GENRE_OPTIONS} /> :
-                                        <FavoriteArtistsCriteria />
-                                }
-                            </th>
-                        </tr>
-                    </tbody>
-                </table>
+                                <th className="criteria-section">
+                                    {
+                                        this.state.playlistType == 'genre' ?
+                                            <GenreCriteria genres={GENRE_OPTIONS} /> :
+                                            <FavoriteArtistsCriteria />
+                                    }
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table> :
+                    <div style={{textAlign: 'center', width: '100%'}}>
+                        <h3 style={{width: '40%', margin: '0 auto'}}>Tendersaucer let's you generate custom Spotify playlists based on different criteria like genre, artist popularity, tempo, etc. Please login to your Spotify account to continue.</h3>
+                    </div>
+                }
             </div>
         )
     }

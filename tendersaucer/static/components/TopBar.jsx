@@ -4,7 +4,11 @@ class TopBar extends React.Component {
             <div className="top-bar-div">
                 <img src="static/images/tendersaucer.jpg" className="top-bar-logo"></img>
                 <h3 className="top-bar-title">TENDERSAUCER</h3>
-                <button className="build-playlist-btn">Build Playlist</button>
+                { IS_LOGGED_IN ?
+                    <button className="build-playlist-btn">Build Playlist</button> :
+                    <button className="build-playlist-btn">Login</button>
+                }
+
             </div>
         )
     }
