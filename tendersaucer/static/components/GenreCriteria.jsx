@@ -57,7 +57,8 @@ class GenreCriteria extends React.Component {
                             </th>
                             <th>
                                 <Range className="slider" defaultValue={[0, 100]} min={0} max={100}
-                                    handleStyle={{borderColor: 'salmon'}} trackStyle={[{backgroundColor: 'salmon'}, {backgroundColor: 'salmon'}]}
+                                    handleStyle={{borderColor: 'salmon'}}
+                                    trackStyle={[{backgroundColor: 'salmon'}, {backgroundColor: 'salmon'}]}
                                     railStyle={{backgroundColor: 'salmon'}} allowCross={false}/>
                             </th>
                         </tr>
@@ -67,7 +68,8 @@ class GenreCriteria extends React.Component {
                             </th>
                             <th>
                                 <Range className="slider" defaultValue={[1900, 2019]} min={1900} max={2019}
-                                    handleStyle={{borderColor: 'salmon'}} trackStyle={[{backgroundColor: 'salmon'}, {backgroundColor: 'salmon'}]}
+                                    handleStyle={{borderColor: 'salmon'}}
+                                    trackStyle={[{backgroundColor: 'salmon'}, {backgroundColor: 'salmon'}]}
                                     railStyle={{backgroundColor: 'salmon'}} allowCross={false}/>
                             </th>
                         </tr>
@@ -77,7 +79,8 @@ class GenreCriteria extends React.Component {
                             </th>
                             <th>
                                 <Range className="slider" defaultValue={[0, 250]} min={0} max={250}
-                                    handleStyle={{borderColor: 'salmon'}} trackStyle={[{backgroundColor: 'salmon'}, {backgroundColor: 'salmon'}]}
+                                    handleStyle={{borderColor: 'salmon'}}
+                                    trackStyle={[{backgroundColor: 'salmon'}, {backgroundColor: 'salmon'}]}
                                     railStyle={{backgroundColor: 'salmon'}} allowCross={false}/>
                             </th>
                         </tr>
@@ -87,14 +90,15 @@ class GenreCriteria extends React.Component {
                             </th>
                             <th>
                                 <Range className="slider" defaultValue={[0, 100]} min={0} max={100}
-                                    handleStyle={{borderColor: 'salmon'}} trackStyle={[{backgroundColor: 'salmon'}, {backgroundColor: 'salmon'}]}
+                                    handleStyle={{borderColor: 'salmon'}}
+                                    trackStyle={[{backgroundColor: 'salmon'}, {backgroundColor: 'salmon'}]}
                                     railStyle={{backgroundColor: 'salmon'}} allowCross={false}/>
                             </th>
                         </tr>
                     </tbody>
                 </table>
 
-                <h3 className="param-header-outside-table" style={{marginRight: '113px'}}>Genres</h3>
+                <h3 className="param-header-outside-table genre-dropdown-label" >Genres</h3>
                 <WindowedSelect classNamePrefix="react-select" styles={SELECT_STYLES}
                     options={this.props.genres} isMulti="true" placeholder="Enter genre name"
                     menuPlacement="bottom"/>

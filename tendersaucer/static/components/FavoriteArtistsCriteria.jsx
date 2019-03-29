@@ -40,7 +40,8 @@ class FavoriteArtistsCriteria extends React.Component {
                             </th>
                             <th>
                                 <Range className="slider" defaultValue={[0, 100]} min={0} max={100}
-                                    handleStyle={{borderColor: 'salmon'}} trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
+                                    handleStyle={{borderColor: 'salmon'}}
+                                    trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
                                     railStyle={{backgroundColor: 'salmon'}} allowCross={false}/>
                             </th>
                         </tr>
@@ -50,7 +51,8 @@ class FavoriteArtistsCriteria extends React.Component {
                             </th>
                             <th>
                                 <Range className="slider" defaultValue={[1900, 2019]} min={1900} max={2019}
-                                    handleStyle={{borderColor: 'salmon'}} trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
+                                    handleStyle={{borderColor: 'salmon'}}
+                                    trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
                                     railStyle={{backgroundColor: 'salmon'}} allowCross={false}/>
                             </th>
                         </tr>
@@ -60,7 +62,8 @@ class FavoriteArtistsCriteria extends React.Component {
                             </th>
                             <th>
                                 <Range className="slider" defaultValue={[0, 250]} min={0} max={250}
-                                    handleStyle={{borderColor: 'salmon'}} trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
+                                    handleStyle={{borderColor: 'salmon'}}
+                                    trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
                                     railStyle={{backgroundColor: 'salmon'}} allowCross={false}/>
                             </th>
                         </tr>
@@ -70,7 +73,8 @@ class FavoriteArtistsCriteria extends React.Component {
                             </th>
                             <th>
                                 <Range className="slider" defaultValue={[0, 100]} min={0} max={100}
-                                    handleStyle={{borderColor: 'salmon'}} trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
+                                    handleStyle={{borderColor: 'salmon'}}
+                                    trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
                                     railStyle={{backgroundColor: 'salmon'}} allowCross={false}/>
                             </th>
                         </tr>
@@ -80,22 +84,23 @@ class FavoriteArtistsCriteria extends React.Component {
                             </th>
                             <th>
                                 <SliderWithTooltip className="slider" defaultValue={3} min={0} max={3}
-                                    handleStyle={{borderColor: 'salmon'}} trackStyle={{backgroundColor: 'salmon'}}
+                                    handleStyle={{borderColor: 'salmon'}}
+                                    trackStyle={{backgroundColor: 'salmon'}}
                                     railStyle={{backgroundColor: 'salmon'}}/>
                             </th>
                         </tr>
                     </tbody>
                 </table>
 
-                <h3 className="param-header-outside-table" style={{marginTop: '30px'}}>Artist Time Range</h3>
-                <button className="btn default"
-                    style={{fontSize: '12px', marginLeft: '-112px', background: this.state.artistTimeRanges.indexOf('short_term') > -1 ? '#EFEFEF' : '#FFFFFF'}}
+                <h3 className="param-header-outside-table artist-time-ranges-label">Artist Time Range</h3>
+                <button className="btn default artist-time-range-first-btn"
+                    style={{background: this.state.artistTimeRanges.indexOf('short_term') > -1 ? '#EFEFEF' : '#FFFFFF'}}
                     onClick={() => this.addOrRemoveArtistTimeRange('short_term')}>Short Term</button>
-                <button className="btn default"
-                    style={{marginLeft: '10px', fontSize: '12px', background: this.state.artistTimeRanges.indexOf('medium_term') > -1 ? '#EFEFEF' : '#FFFFFF'}}
+                <button className="btn default artist-time-range-btn"
+                    style={{background: this.state.artistTimeRanges.indexOf('medium_term') > -1 ? '#EFEFEF' : '#FFFFFF'}}
                     onClick={() => this.addOrRemoveArtistTimeRange('medium_term')}>Medium Term</button>
-                <button className="btn default"
-                    style={{marginLeft: '10px', fontSize: '12px', background: this.state.artistTimeRanges.indexOf('long_term') > -1 ? '#EFEFEF' : '#FFFFFF'}}
+                <button className="btn default artist-time-range-btn"
+                    style={{background: this.state.artistTimeRanges.indexOf('long_term') > -1 ? '#EFEFEF' : '#FFFFFF'}}
                     onClick={() => this.addOrRemoveArtistTimeRange('long_term')}>Long Term</button>
             </div>
         )

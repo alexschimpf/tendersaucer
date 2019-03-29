@@ -4,6 +4,47 @@ h3 {
     font-size: 16px;
 }
 
+.main-table {
+    width: 100%;
+}
+
+.side-bar-section {
+    width: 28%;
+    border-right-color: salmon;
+    border-right-style: solid;
+    border-right-width: 1px;
+    position: fixed;
+}
+
+.criteria-section {
+    width: 50%;
+    float: right;
+    margin-right: 14%;
+}
+
+.top-bar-div {
+    background-image: linear-gradient(to right, darksalmon, salmon);
+    margin: -10px;
+    height: 80px;
+    margin-bottom: 40px;
+}
+
+.top-bar-logo {
+    width: 80px;
+    padding-top: 10px;
+    float: left;
+    margin-left: 40px;
+}
+
+.top-bar-title {
+    display: inline-block;
+    margin: 0;
+    padding: 20px;
+    font-size: 40px;
+    color: white;
+    padding-left: 10px;
+}
+
 .checkbox-label {
     font-weight: 100;
     font-family: 'Ubuntu', sans-serif;
@@ -20,6 +61,14 @@ h3 {
     float: left;
     font-size: 16px;
     margin-left: 3px;
+}
+
+.genre-dropdown-label {
+    margin-right: 113px;
+}
+
+.artist-time-ranges-label {
+    margin-top: 20px;
 }
 
 .btn {
@@ -45,6 +94,12 @@ h3 {
     background: #EFEFEF;
 }
 
+.genre-playlist-type-btn {
+    color: black;
+    margin-top: 5px;
+    outline: none;
+}
+
 .build-playlist-btn {
     outline: none;
     background: none;
@@ -62,6 +117,18 @@ h3 {
 .build-playlist-btn:hover {
     background: lightsalmon;
     cursor: pointer;
+}
+
+.artist-time-range-first-btn {
+    font-size: 12px;
+    margin-left: -124px;
+    margin-top: 20px;
+}
+
+.artist-time-range-btn {
+    font-size: 12px;
+    margin-left: 10px;
+    margin-top: 20px;
 }
 
 .playlist-name {

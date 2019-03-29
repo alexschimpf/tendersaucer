@@ -22,8 +22,8 @@ class SideBar extends React.Component {
                 <h3>Playlist Name</h3>
                 <input className="playlist-name" type="text"></input>
                 <h3>Playlist Type</h3>
-                <button className="btn default"
-                    style={{marginTop: '5px', background: this.state.playlistType == 'genre' ? '#EFEFEF' : '#FFFFFF'}}
+                <button className="btn genre-playlist-type-btn"
+                    style={{background: this.state.playlistType == 'genre' ? '#EFEFEF' : '#FFFFFF'}}
                     onClick={() => this.onPlaylistTypeChanged('genre')}>Genres</button><br></br>
                 <button className="btn default"
                     style={{background: this.state.playlistType == 'favorite_artists' ? '#EFEFEF' : '#FFFFFF'}}

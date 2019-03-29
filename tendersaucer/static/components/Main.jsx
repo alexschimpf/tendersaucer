@@ -35,26 +35,20 @@ class Main extends React.Component {
         return (
             <div>
                 <TopBar />
-                <table style={{width: '100%'}}>
+                <table className="main-table">
                     <tbody>
                         <tr>
-                            <th style={{
-                                    width: '30%', borderRightColor: 'salmon',
-                                    borderRightStyle: 'solid', borderRightWidth: '1px', position: 'fixed'}}>
+                            <th className="side-bar-section">
                                 <SideBar onPlaylistTypeChanged={this.onPlaylistTypeChanged} />
                             </th>
 
-                            <th style={{width: '5%'}}></th>
-
-                            <th style={{width: '50%'}}>
+                            <th className="criteria-section">
                                 {
                                     this.state.playlistType == 'genre' ?
                                         <GenreCriteria genres={GENRE_OPTIONS} /> :
                                         <FavoriteArtistsCriteria />
                                 }
                             </th>
-
-                            <th style={{width: '15%'}}></th>
                         </tr>
                     </tbody>
                 </table>
