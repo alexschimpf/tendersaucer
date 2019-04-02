@@ -45,6 +45,38 @@ const SELECT_STYLES = {
 };
 
 class GenreCriteria extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.onArtistPopularityChanged = this.onArtistPopularityChanged.bind(this);
+        this.onTrackReleaseYearChanged = this.onTrackReleaseYearChanged.bind(this);
+        this.onTrackTempoChanged = this.onTrackTempoChanged.bind(this);
+        this.onTrackDanceabilityChanged = this.onTrackDanceabilityChanged.bind(this);
+        this.onGenresChanged = this.onGenresChanged.bind(this);
+    }
+
+    onArtistPopularityChanged(rangeValues) {
+        this.props.onFormChanged('artistPopularity', rangeValues);
+    }
+
+    onTrackReleaseYearChanged(rangeValues) {
+        this.props.onFormChanged('trackReleaseYear', rangeValues);
+    }
+
+    onTrackTempoChanged(rangeValues) {
+        this.props.onFormChanged('trackTempo', rangeValues);
+    }
+
+    onTrackDanceabilityChanged(rangeValues) {
+        this.props.onFormChanged('trackDanceability', rangeValues);
+    }
+
+    onGenresChanged(genres) {
+        let selectedGenres = genres.map((genre) => genre.value);
+        this.props.onFormChanged('genres', selectedGenres);
+    }
+
     render() {
         return (
             <div>
@@ -58,7 +90,8 @@ class GenreCriteria extends React.Component {
                                 <Range className="slider" defaultValue={[0, 100]} min={0} max={100}
                                     handleStyle={{borderColor: 'salmon'}}
                                     trackStyle={[{backgroundColor: 'salmon'}, {backgroundColor: 'salmon'}]}
-                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}/>
+                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}
+                                    onChange={this.onArtistPopularityChanged} />
                             </th>
                         </tr>
                         <tr>
@@ -69,7 +102,8 @@ class GenreCriteria extends React.Component {
                                 <Range className="slider" defaultValue={[1900, 2019]} min={1900} max={2019}
                                     handleStyle={{borderColor: 'salmon'}}
                                     trackStyle={[{backgroundColor: 'salmon'}, {backgroundColor: 'salmon'}]}
-                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}/>
+                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}
+                                    onChange={this.onTrackReleaseYearChanged} />
                             </th>
                         </tr>
                         <tr>
@@ -80,7 +114,8 @@ class GenreCriteria extends React.Component {
                                 <Range className="slider" defaultValue={[0, 250]} min={0} max={250}
                                     handleStyle={{borderColor: 'salmon'}}
                                     trackStyle={[{backgroundColor: 'salmon'}, {backgroundColor: 'salmon'}]}
-                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}/>
+                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}
+                                    onChange={this.onTrackTempoChanged} />
                             </th>
                         </tr>
                         <tr>
@@ -91,7 +126,8 @@ class GenreCriteria extends React.Component {
                                 <Range className="slider" defaultValue={[0, 100]} min={0} max={100}
                                     handleStyle={{borderColor: 'salmon'}}
                                     trackStyle={[{backgroundColor: 'salmon'}, {backgroundColor: 'salmon'}]}
-                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}/>
+                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}
+                                    onChange={this.onTrackDanceabilityChanged} />
                             </th>
                         </tr>
                     </tbody>
@@ -100,7 +136,8 @@ class GenreCriteria extends React.Component {
                 <h3 className="param-header-outside-table genre-dropdown-label" >Genres</h3>
                 <WindowedSelect classNamePrefix="react-select" styles={SELECT_STYLES}
                     options={this.props.genres} isMulti="true" placeholder="Enter genre name"
-                    menuPlacement="bottom"/>
+                    menuPlacement="bottom"
+                    onChange={this.onGenresChanged} />
             </div>
         )
     }

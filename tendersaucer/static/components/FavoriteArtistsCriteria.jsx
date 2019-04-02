@@ -9,6 +9,7 @@ const SliderWithTooltip = createSliderWithTooltip(Slider);
 
 
 class FavoriteArtistsCriteria extends React.Component {
+
     constructor(props) {
         super(props);
 
@@ -17,6 +18,31 @@ class FavoriteArtistsCriteria extends React.Component {
         };
 
         this.addOrRemoveArtistTimeRange = this.addOrRemoveArtistTimeRange.bind(this);
+        this.onArtistPopularityChanged = this.onArtistPopularityChanged.bind(this);
+        this.onTrackReleaseYearChanged = this.onTrackReleaseYearChanged.bind(this);
+        this.onTrackTempoChanged = this.onTrackTempoChanged.bind(this);
+        this.onTrackDanceabilityChanged = this.onTrackDanceabilityChanged.bind(this);
+        this.onAdventurousnessChanged = this.onAdventurousnessChanged.bind(this);
+    }
+
+    onArtistPopularityChanged(rangeValues) {
+        this.props.onFormChanged('artistPopularity', rangeValues);
+    }
+
+    onTrackReleaseYearChanged(rangeValues) {
+        this.props.onFormChanged('trackReleaseYear', rangeValues);
+    }
+
+    onTrackTempoChanged(rangeValues) {
+        this.props.onFormChanged('trackTempo', rangeValues);
+    }
+
+    onTrackDanceabilityChanged(rangeValues) {
+        this.props.onFormChanged('trackDanceability', rangeValues);
+    }
+
+    onAdventurousnessChanged(value) {
+        this.props.onFormChanged('adventurousness', value);
     }
 
     addOrRemoveArtistTimeRange(timeRange) {
@@ -30,6 +56,8 @@ class FavoriteArtistsCriteria extends React.Component {
         this.setState({
             artistTimeRanges: newArtistTimeRanges
         })
+
+        this.props.onFormChanged('artistTimeRanges', newArtistTimeRanges);
     }
 
     render() {
@@ -46,7 +74,8 @@ class FavoriteArtistsCriteria extends React.Component {
                                 <Range className="slider" defaultValue={[0, 100]} min={0} max={100}
                                     handleStyle={{borderColor: 'salmon'}}
                                     trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
-                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}/>
+                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}
+                                    onChange={this.onArtistPopularityChanged} />
                             </th>
                         </tr>
                         <tr>
@@ -57,7 +86,8 @@ class FavoriteArtistsCriteria extends React.Component {
                                 <Range className="slider" defaultValue={[1900, 2019]} min={1900} max={2019}
                                     handleStyle={{borderColor: 'salmon'}}
                                     trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
-                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}/>
+                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}
+                                    onChange={this.onTrackReleaseYearChanged} />
                             </th>
                         </tr>
                         <tr>
@@ -68,7 +98,8 @@ class FavoriteArtistsCriteria extends React.Component {
                                 <Range className="slider" defaultValue={[0, 250]} min={0} max={250}
                                     handleStyle={{borderColor: 'salmon'}}
                                     trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
-                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}/>
+                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}
+                                    onChange={this.onTrackTempoChanged} />
                             </th>
                         </tr>
                         <tr>
@@ -79,7 +110,8 @@ class FavoriteArtistsCriteria extends React.Component {
                                 <Range className="slider" defaultValue={[0, 100]} min={0} max={100}
                                     handleStyle={{borderColor: 'salmon'}}
                                     trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
-                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}/>
+                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}
+                                    onChange={this.onTrackDanceabilityChanged} />
                             </th>
                         </tr>
                         <tr>
@@ -96,7 +128,8 @@ class FavoriteArtistsCriteria extends React.Component {
                                 <SliderWithTooltip className="slider" defaultValue={3} min={0} max={3}
                                     handleStyle={{borderColor: 'salmon'}}
                                     trackStyle={{backgroundColor: 'salmon'}}
-                                    railStyle={{backgroundColor: 'salmon'}}/>
+                                    railStyle={{backgroundColor: 'salmon'}}
+                                    onChange={this.onAdventurousnessChanged} />
                             </th>
                         </tr>
                     </tbody>

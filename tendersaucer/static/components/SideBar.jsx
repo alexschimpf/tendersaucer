@@ -10,13 +10,18 @@ class SideBar extends React.Component {
         };
 
         this.onPlaylistTypeChanged = this.onPlaylistTypeChanged.bind(this);
+        this.onPlaylistNameChanged = this.onPlaylistNameChanged.bind(this);
     }
 
     onPlaylistTypeChanged(playlistType) {
         this.setState({
             playlistType: playlistType
         });
-        this.props.onPlaylistTypeChanged(playlistType);
+        this.props.onFormChanged('playlistType', playlistType);
+    }
+
+    onPlaylistNameChanged(event) {
+        this.props.onFormChanged('playlistName', event.target.value);
     }
 
     render() {
@@ -24,7 +29,8 @@ class SideBar extends React.Component {
             <div>
                 <ReactTooltip effect="solid" className="tooltip"/>
                 <h3>Playlist Name</h3>
-                <input className="playlist-name" type="text"></input>
+                <input className="playlist-name" type="text"
+                       onChange={this.onPlaylistNameChanged}></input>
                 <h3>Playlist Type</h3>
                 <button className="btn genre-playlist-type-btn"
                     style={{background: this.state.playlistType == 'genre' ? '#EFEFEF' : '#FFFFFF'}}

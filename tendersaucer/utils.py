@@ -56,7 +56,7 @@ def spotfiy_auth_required(func):
             return redirect('/')
         elif session.get('spotify_access_token_expiry_time') <= curr_time:
             refresh_token = session.get('spotify_refresh_token')
-            oauth_client = spotify_client.get_oauth_client()
+            oauth_client = spotify_client.Spotify.get_oauth_client()
             token_info = oauth_client.refresh_access_token(refresh_token=refresh_token)
             session['spotify_access_token'] = token_info['access_token']
             session['spotify_access_token_expiry_time'] = token_info['expires_at']
@@ -68,10 +68,12 @@ def spotfiy_auth_required(func):
     return wrapped
 
 
-def delimited_list(text):
-    if not text:
-        return None
-    return text.split(',')
+def delimited_list(value_type=str):
+    def wrapper(text):
+        if not text:
+            return None
+        return list(map(value_type, text.split(',')))
+    return wrapper
 
 
 def boolean(text):

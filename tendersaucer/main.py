@@ -10,7 +10,7 @@ from tendersaucer.service.spotify_client import Spotify
 from tendersaucer.service import redis_client, neo4j_client
 from flask import Flask, request, session, redirect, jsonify, render_template
 from tendersaucer.tasks import app as celery_app, build_genre_playlist, build_personalized_playlist
-from tendersaucer.utils import catch_errors, spotfiy_auth_required, delimited_list, TendersaucerException
+from tendersaucer.utils import catch_errors, spotfiy_auth_required, delimited_list, boolean, TendersaucerException
 
 
 app = Flask(__name__, template_folder='static')
@@ -40,16 +40,16 @@ def build_playlist():
     spotify_access_token = session['spotify_access_token']
 
     playlist_name = request.args.get('playlist_name')
-    time_ranges = request.arg.get('time_ranges', delimited_list)
-    artist_popularity_range = request.args.get('artist_popularity_range', delimited_list)
-    track_release_year_range = request.args.get('track_release_year_range', delimited_list)
-    track_danceability_range = request.args.get('track_danceability_range', delimited_list)
-    track_tempo_range = request.args.get('track_tempo_range', delimited_list)
-    included_genres = request.args.get('included_genres', delimited_list)
-    excluded_genres = request.args.get('excluded_genres', delimited_list)
-    exclude_familiar_artists = request.args.get('exclude_familiar_artists', bool)
+    time_ranges = request.args.get('time_ranges', type=delimited_list())
+    artist_popularity_range = request.args.get('artist_popularity_range', type=delimited_list(int))
+    track_release_year_range = request.args.get('track_release_year_range', type=delimited_list(int))
+    track_danceability_range = request.args.get('track_danceability_range', type=delimited_list(int))
+    track_tempo_range = request.args.get('track_tempo_range', type=delimited_list(int))
+    included_genres = request.args.get('included_genres', type=delimited_list())
+    excluded_genres = request.args.get('excluded_genres', type=delimited_list())
+    exclude_familiar_artists = request.args.get('exclude_familiar_artists', type=boolean, default=False)
 
-    max_search_depth = request.args.get('max_search_depth', int)
+    max_search_depth = request.args.get('max_search_depth', type=int)
     if max_search_depth > 3:
         raise TendersaucerException('max_search_depth must be <= 3')
     if max_search_depth == 0 and exclude_familiar_artists:
@@ -59,14 +59,14 @@ def build_playlist():
     if playlist_type == 'genre':
         task = build_genre_playlist
         result = task.delay(
-            spotify_access_token, playlist_name, time_ranges, artist_popularity_range,
-            track_release_year_range, track_danceability_range, track_tempo_range, included_genres,
-            excluded_genres, exclude_familiar_artists, max_search_depth)
+            spotify_access_token, playlist_name, included_genres, artist_popularity_range,
+            track_release_year_range, track_danceability_range, track_tempo_range, exclude_familiar_artists)
     elif playlist_type == 'personalized':
         task = build_personalized_playlist
         result = task.delay(
-            spotify_access_token, playlist_name, included_genres, artist_popularity_range,
-            track_release_year_range, track_danceability_range, track_tempo_range, exclude_familiar_artists)
+            spotify_access_token, playlist_name, time_ranges, artist_popularity_range,
+            track_release_year_range, track_danceability_range, track_tempo_range, included_genres,
+            excluded_genres, exclude_familiar_artists, max_search_depth)
     else:
         raise TendersaucerException('Invalid playlist_type')
 
