@@ -23,8 +23,7 @@ const SELECT_STYLES = {
     }),
     option: (styles, state) => ({
         ...styles,
-        backgroundColor: 'white',
-        border: '1px dotted salmon'
+        backgroundColor: 'white'
     }),
     control: (styles, state) => ({
         ...styles,

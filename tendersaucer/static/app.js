@@ -3,6 +3,7 @@ import './html/index.html';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Main from './components/Main.jsx';
+import ReactTooltip from 'react-tooltip';
 
 
 if (window.location.hash) {

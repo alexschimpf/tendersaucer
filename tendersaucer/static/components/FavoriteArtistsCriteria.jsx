@@ -1,5 +1,8 @@
 import 'rc-slider/assets/index.css';
+import InfoIcon from './InfoIcon';
 import Slider, { createSliderWithTooltip } from 'rc-slider';
+import ReactTooltip from 'react-tooltip';
+
 
 const Range = createSliderWithTooltip(Slider.Range);
 const SliderWithTooltip = createSliderWithTooltip(Slider);
@@ -32,6 +35,7 @@ class FavoriteArtistsCriteria extends React.Component {
     render() {
         return (
             <div>
+                <ReactTooltip effect="solid" className="tooltip"/>
                 <table>
                     <tbody>
                         <tr>
@@ -80,7 +84,13 @@ class FavoriteArtistsCriteria extends React.Component {
                         </tr>
                         <tr>
                             <th>
-                                <h3 className="param-header">Adventurousness</h3>
+                                <span className="param-header">
+                                    <h3 className="info-icon-param-header">Adventurousness</h3>
+                                    <InfoIcon message="This scale represents how much you want your playlist to
+                                                       deviate from your favorite artists. 0 means you only want
+                                                       listen to artists you know. 3 means you're willing to listen
+                                                       to artists who are more different than your favorite artists." />
+                                </span>
                             </th>
                             <th>
                                 <SliderWithTooltip className="slider" defaultValue={3} min={0} max={3}
@@ -92,7 +102,13 @@ class FavoriteArtistsCriteria extends React.Component {
                     </tbody>
                 </table>
 
-                <h3 className="param-header-outside-table artist-time-ranges-label">Artist Time Range</h3>
+                <span className="param-header-outside-table" style={{marginTop: '5px'}}>
+                    <h3 className="info-icon-param-header">Artist Time Range</h3>
+                    <InfoIcon message="This is used to help identify your favorite artists -
+                                       whether or not to consider artists you've listened
+                                       to in the short term, medium term, and/or long term." />
+                </span>
+
                 <button className="btn default artist-time-range-first-btn"
                     style={{background: this.state.artistTimeRanges.indexOf('short_term') > -1 ? '#EFEFEF' : '#FFFFFF'}}
                     onClick={() => this.addOrRemoveArtistTimeRange('short_term')}>Short Term</button>

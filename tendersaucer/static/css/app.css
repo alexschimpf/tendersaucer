@@ -8,6 +8,21 @@ h3 {
     width: 100%;
 }
 
+.info-icon {
+    margin-left: 5px;
+}
+
+.tooltip {
+    max-width: 200px;
+    text-align: center;
+    font-weight: 100;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.info-icon-param-header {
+    display: inline-block;
+}
+
 .side-bar-section {
     width: 28%;
     border-right-color: salmon;
