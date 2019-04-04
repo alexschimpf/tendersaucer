@@ -1,53 +1,10 @@
-1. Only keep a max of 1,000,000 artists in Spotify (use LRU eviction policy)
-2. Don't index artists without related artists or top tracks or who have 0 popularity
-3. Store only related artists for each artist
-    - artist => set of related artists (NOT PICKLE)
-    - Use RedisGraph: https://oss.redislabs.com/redisgraph/commands/#variable-length-relationships
-4. Keep sets of artist ids for each genre
-    - Make this a sorted set based on popularity
-5. Use get_artists in spotify_indexer to cut down on Spotify API calls
-6. When a small playlist is built, notify user and tell them to make their criteria less specific
-7. Only one artist per playlist
-8. Use MySQL to store artist tracks (track_id, artist_id, danceability, tempo, release_year)
-9. When celery task is done, update the task's state with the playlist's size
-10. Retry failed celery tasks using: http://docs.celeryproject.org/en/latest/userguide/tasks.html#retrying
-11. Cache user top artist/genres in session
-12. Allow for logging out
-13. DOCKERIZE!
-
----------------------------------------------------------------------------------------------------------------------------------
-
-1. Search for artists in redis based on artist criteria (genre, popularity)
-    - Or get favorite artists from Spotify API
-2. Search tracks based in MySQL based on track criteria (artist, danceability, tempo, track release year)
-
----------------------------------------------------------------------------------------------------------------------------------
-
-Seed Types
-    - Custom genres
-        - Genres to include (maybe include 'Add Favorite Genres' button?)
-        - Artist popularity range
-        - Track danceability range
-        - Track tempo range
-        - Track release year range
-        - Playlist name
-    - Favorite artists
-        - Short/Medium/Long-term
-            - Can choose multiple
-        - Artist popularity range
-        - Track danceability range
-        - Track tempo range
-        - Track release year range
-        - Adventurousness (some other way to frame this?)
-        - Playlist name
-
----------------------------------------------------------------------------------------------------------------------------------
-
-Questions
-
-- So many steps. How to simplify for user? Combine multiple steps into one form?
-- What are some interesting things to show the user in the UI?
-    - Their top genres
-    - Their top artists (short/medium/long-term)
-    - Avails - but Is this feasible?
-- Use react native for mobile app?
+- When celery task is done, update the task's state with the playlist's size
+    - If playlist size is small, tell user their criteria is too limiting
+- Retry failed celery tasks using: http://docs.celeryproject.org/en/latest/userguide/tasks.html#retrying
+- Cache user top artist/genres in session?
+- Allow for logging out
+- Show Top Artists Button
+- Show Top Genres Button
+- Clean up CSS
+- React-Native
+- Avails?

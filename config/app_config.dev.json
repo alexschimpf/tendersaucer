@@ -1,8 +1,8 @@
 {
     "environment": "dev",
     "celery": {
-        "backend": "redis://tendersaucer_redis:6379/1",
-        "broker": "redis://tendersaucer_redis:6379/2"
+        "backend": "redis://127.0.0.1:6380/1",
+        "broker": "redis://127.0.0.1:6380/2"
     },
     "mysql": {
         "host": "tendersaucer_mysql",

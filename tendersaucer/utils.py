@@ -71,7 +71,7 @@ def spotfiy_auth_required(func):
 def delimited_list(value_type=str):
     def wrapper(text):
         if not text:
-            return None
+            return []
         return list(map(value_type, text.split(',')))
     return wrapper
 

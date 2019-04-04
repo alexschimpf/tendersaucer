@@ -1,13 +1,15 @@
 import random
 from celery import Celery
+from celery import states
 from tendersaucer import utils
+from celery.exceptions import Ignore
 from tendersaucer.config import APP_CONFIG
 from tendersaucer.service import neo4j_client
 from tendersaucer.db.tendersaucer import top_tracks
 from tendersaucer.service.spotify_client import Spotify
 
 
-app = Celery('tasks', **APP_CONFIG['celery'])
+app = Celery('tendersaucer.tasks', **APP_CONFIG['celery'])
 
 
 @app.task(bind=True)
@@ -58,7 +60,10 @@ def build_personalized_playlist(
         release_year_range=track_release_year_range, danceability_range=track_danceability_range)
     track_ids = random.sample(track_ids, min(len(track_ids), 50))
 
-    spotify_client.export_playlist(playlist_name=playlist_name, track_ids=track_ids)
+    try:
+        spotify_client.export_playlist(playlist_name=playlist_name, track_ids=track_ids)
+    except utils.TendersaucerException as e:
+        _set_failure_state(task=self, exception=e)
 
 
 @app.task(bind=True)
@@ -88,7 +93,10 @@ def build_genre_playlist(
         release_year_range=track_release_year_range, danceability_range=track_danceability_range)
     track_ids = random.sample(track_ids, min(len(track_ids), 50))
 
-    spotify_client.export_playlist(playlist_name=playlist_name, track_ids=track_ids)
+    try:
+        spotify_client.export_playlist(playlist_name=playlist_name, track_ids=track_ids)
+    except utils.TendersaucerException as e:
+        _set_failure_state(task=self, exception=e)
 
 
 def _get_familiar_artists(spotify_client):
@@ -100,3 +108,24 @@ def _get_familiar_artists(spotify_client):
         artist_ids.add(artist['id'])
 
     return artist_ids
+
+
+def _set_failure_state(task, exception):
+    if isinstance(exception, utils.TendersaucerException):
+        task.update_state(
+            state=states.FAILURE,
+            meta={
+                'exc_type': 'Expected',
+                'exc_message': str(exception)
+            }
+        )
+        raise Ignore()
+    else:
+        task.update_state(
+            state=states.FAILURE,
+            meta={
+                'exc_type': 'Unexpected',
+                'exc_message': 'Sorry, something went wrong. Please try again.'
+            }
+        )
+        raise Ignore()

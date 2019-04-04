@@ -1,5 +1,6 @@
 import spotipy
 from tendersaucer.config import APP_CONFIG
+from tendersaucer.utils import TendersaucerException
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 
 
@@ -53,7 +54,7 @@ class Spotify(spotipy.Spotify):
         for time_range in time_ranges:
             top_artists = self.current_user_top_artists(time_range=time_range)
             while top_artists:
-                user_top_artists.extend(top_artists)
+                user_top_artists.extend(top_artists['items'])
                 top_artists = self.next(top_artists)
 
         return user_top_artists
@@ -93,7 +94,8 @@ class Spotify(spotipy.Spotify):
 
     def export_playlist(self, playlist_name, track_ids):
         if not track_ids:
-            raise Exception('Playlist is empty')
+            raise TendersaucerException('Your criteria was too limiting. '
+                                        'Please loosen your criteria and try again.')
 
         spotify_user_id = self.me().get('id')
         new_playlist = self.user_playlist_create(spotify_user_id, playlist_name)

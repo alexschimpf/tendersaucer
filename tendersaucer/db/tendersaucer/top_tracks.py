@@ -10,25 +10,30 @@ def get_tracks(artist_ids, tempo_range, release_year_range, danceability_range):
             tendersaucer.top_tracks
         WHERE
             artist_id IN (%(artist_ids)s) AND
-            tempo >= %(tempo_min)s AND
-            tempo <= %(tempo_max)s AND
-            release_year BETWEEN (%(min_release_year)s AND %(max_release_year)s) AND
-            danceability >= %(danceability_min)s AND
-            danceability <= %(danceability_max)s
+            tempo >= %(min_tempo)s AND
+            tempo <= %(max_tempo)s AND
+            release_year >= %(min_release_year)s AND 
+            release_year <= %(max_release_year)s AND
+            danceability >= %(min_danceability)s AND
+            danceability <= %(max_danceability)s
     '''
     params = {
         'artist_ids': artist_ids,
-        'tempo_min': tempo_range[0],
-        'tempo_max': tempo_range[1],
-        'release_year_min': release_year_range[0],
-        'release_year_max': release_year_range[1],
-        'danceability_min': danceability_range[0],
-        'danceability_max': danceability_range[1]
+        'min_tempo': tempo_range[0],
+        'max_tempo': tempo_range[1],
+        'min_release_year': release_year_range[0],
+        'max_release_year': release_year_range[1],
+        'min_danceability': danceability_range[0],
+        'max_danceability': danceability_range[1]
     }
     query, params = handle_list_params(query=query, params=params)
     rows = fetch_all(pool=CONNECTION_POOL, query=query, params=params)
+    
+    track_ids = []
     for row in rows:
-        yield row['id']
+        track_ids.append(row['id'])
+        
+    return track_ids
 
 
 def get_artists_with_tracks(artist_ids):

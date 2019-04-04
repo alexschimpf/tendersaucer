@@ -61,7 +61,7 @@ def build_playlist():
         result = task.delay(
             spotify_access_token, playlist_name, included_genres, artist_popularity_range,
             track_release_year_range, track_danceability_range, track_tempo_range, exclude_familiar_artists)
-    elif playlist_type == 'personalized':
+    elif playlist_type == 'favorite_artists':
         task = build_personalized_playlist
         result = task.delay(
             spotify_access_token, playlist_name, time_ranges, artist_popularity_range,
@@ -76,14 +76,18 @@ def build_playlist():
 @app.route('/task/<task_id>/status', methods=['GET'])
 @catch_errors
 def get_task_status(task_id):
+    message = None
     progress = 0.0
     result = AsyncResult(id=task_id, app=celery_app)
-    if result.state == 'IN_PROGRESS':
-        progress = result.result['value']
-    elif result.state in ('FAILURE', 'SUCCESS'):
+    if result.state == 'SUCCESS':
         progress = 100.0
+    elif result.state == 'FAILURE':
+        progress = 100.0
+        result_meta = result.backend.get(result.backend.get_key_for_task(result.id))
+        result_meta = json.loads(result_meta.decode('utf8'))
+        message = result_meta['result']['exc_message']
 
-    return jsonify(progress=progress)
+    return jsonify(progress=progress, state=result.state, message=message)
 
 
 @app.route('/get_spotify_auth', methods=['GET'])
