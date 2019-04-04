@@ -6,7 +6,6 @@ import GenreCriteria from './GenreCriteria';
 import FavoriteArtistsCriteria from './FavoriteArtistsCriteria';
 import Loader from 'react-loader-spinner'
 import Popup from 'react-popup';
-import '../css/popup.css';
 
 
 const GENRE_OPTIONS = [];
