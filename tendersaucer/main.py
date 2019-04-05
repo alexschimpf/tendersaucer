@@ -90,6 +90,29 @@ def get_task_status(task_id):
     return jsonify(progress=progress, state=result.state, message=message)
 
 
+@app.route('/user_top_genres', methods=['GET'])
+@spotfiy_auth_required
+@catch_errors
+def get_user_top_genres():
+    spotify_access_token = session['spotify_access_token']
+    spotify_client = Spotify(auth=spotify_access_token)
+    user_top_genres = spotify_client.get_user_top_genres(limit=10)
+
+    return jsonify(top_genres=user_top_genres)
+
+
+@app.route('/user_top_artists', methods=['GET'])
+@spotfiy_auth_required
+@catch_errors
+def get_user_top_artists():
+    spotify_access_token = session['spotify_access_token']
+    spotify_client = Spotify(auth=spotify_access_token)
+    user_top_artists = spotify_client.get_user_top_artists(time_ranges=('medium_term',), limit=10)
+    user_top_artists = [artist['name'] for artist in user_top_artists]
+
+    return jsonify(top_artists=user_top_artists)
+
+
 @app.route('/get_spotify_auth', methods=['GET'])
 @catch_errors
 def get_spotify_auth():

@@ -124,6 +124,27 @@ h3 {
     border-color: #EDAB94;
 }
 
+.hamburger-menu {
+    text-align: center;
+}
+
+.hamburger-menu-btn {
+    background-color: white;
+    color: black;
+    padding: 14px 28px;
+    font-size: 16px;
+    cursor: pointer;
+    border-width: 0px;
+    font-weight: 100;
+    font-family: 'Ubuntu', sans-serif;
+    width: 100%;
+}
+
+.hamburger-menu-btn:hover {
+    background: #EFEFEF;
+    border-color: #EDAB94;
+}
+
 .genre-playlist-type-btn {
     color: black;
     margin-top: 5px;
@@ -141,11 +162,23 @@ h3 {
     float: right;
     display: inline-block;
     height: 100%;
-    width: 200px;
+    width: 140px;
 }
 
 .top-bar-btn:hover {
     background: lightsalmon;
+    cursor: pointer;
+}
+
+.top-bar-hamburger {
+    width: 60px;
+    height: 60px;
+    float: right;
+    margin-right: 40px;
+    padding: 10px;
+}
+
+.top-bar-hamburger:hover {
     cursor: pointer;
 }
 
@@ -188,6 +221,8 @@ h3 {
 .pre-login-msg {
     width: 40%;
     margin: 0 auto;
+    font-weight: 100;
+    font-size: 20px;
 }
 
 div.slider {

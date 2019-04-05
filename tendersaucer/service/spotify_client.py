@@ -49,7 +49,7 @@ class Spotify(spotipy.Spotify):
     def get_audio_features_for_tracks(self, track_ids):
         return self.audio_features(tracks=track_ids) or ()
 
-    def get_user_top_artists(self, time_ranges):
+    def get_user_top_artists(self, time_ranges, limit=None):
         user_top_artists = []
         for time_range in time_ranges:
             top_artists = self.current_user_top_artists(time_range=time_range)
@@ -57,7 +57,30 @@ class Spotify(spotipy.Spotify):
                 user_top_artists.extend(top_artists['items'])
                 top_artists = self.next(top_artists)
 
+        if limit:
+            user_top_artists = user_top_artists[:limit]
+
         return user_top_artists
+
+    def get_user_top_genres(self, limit=None):
+        genre_frequency_map = {}
+        artist_ids = self.get_artists_from_user_playlists()
+        artists = self.get_artists(artist_ids=artist_ids)
+        for artist in artists:
+            for genre in artist['genres'] or ():
+                try:
+                    genre_frequency_map[genre] += 1
+                except KeyError:
+                    genre_frequency_map[genre] = 1
+
+        genre_frequency = [(genre, count) for genre, count in genre_frequency_map.items()]
+        genre_frequency = sorted(genre_frequency, key=lambda genre_count: genre_count[1], reverse=True)
+        top_genres = [genre_count[0] for genre_count in genre_frequency[:min(10, len(genre_frequency))]]
+
+        if limit:
+            top_genres = top_genres[:limit]
+
+        return top_genres
 
     def get_artists_from_user_playlists(self):
         user_playlist_artist_ids = set()

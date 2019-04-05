@@ -4,14 +4,14 @@ import TopBar from './TopBar';
 import SideBar from './SideBar';
 import GenreCriteria from './GenreCriteria';
 import FavoriteArtistsCriteria from './FavoriteArtistsCriteria';
-import Loader from 'react-loader-spinner'
+import Loader from 'react-loader-spinner';
 import Popup from 'react-popup';
 
 
 const GENRE_OPTIONS = [];
 for (let genre of GENRES) {
     GENRE_OPTIONS.push({
-        label: genre.toUpperCase(),
+        label: genre.charAt(0).toUpperCase() + genre.slice(1),
         value: genre
     });
 }
@@ -182,7 +182,7 @@ class Main extends React.Component {
                         </table> :
                         <div className="pre-login-msg-div">
                             <h3 className="pre-login-msg">
-                                Tendersaucer let's you generate custom Spotify playlists
+                                Tendersaucer lets you generate custom Spotify playlists
                                 based on different criteria like genre, artist popularity,
                                 empo, etc. Please log in to your Spotify account to continue.
                             </h3>
