@@ -100,20 +100,20 @@ class TopBar extends React.Component {
                 <h3 className="top-bar-title">TENDERSAUCER</h3>
                 {
                     IS_LOGGED_IN &&
+                        <button className="top-bar-btn build-playlist-btn" onClick={this.props.onBuildPlaylist}>Build Playlist</button>
+                }
+                {
+                    IS_LOGGED_IN &&
                         <Menu
                             trigger={<button className="top-bar-btn">Account</button>}
                             position="bottom center" on="click" mouseLeaveDelay={300} mouseEnterDelay={0}
                             contentStyle={{ padding: '0px', border: 'none', width: '160px' }} arrow={false} closeOnDocumentClick>
-                            <div className="hamburger-menu">
-                                <button className="hamburger-menu-btn" onClick={this.showFavoriteArtists}>Show Favorite Artists</button><br></br>
-                                <button className="hamburger-menu-btn" onClick={this.showFavoriteGenres}>Show Favorite Genres</button><br></br>
-                                <button className="hamburger-menu-btn" onClick={this.logout}>Logout</button>
+                            <div className="account-menu">
+                                <button className="account-menu-btn" onClick={this.showFavoriteArtists}>Show Favorite Artists</button><br></br>
+                                <button className="account-menu-btn" onClick={this.showFavoriteGenres}>Show Favorite Genres</button><br></br>
+                                <button className="account-menu-btn" onClick={this.logout}>Logout</button>
                             </div>
                         </Menu>
-                }
-                {
-                    IS_LOGGED_IN &&
-                        <button className="top-bar-btn" onClick={this.props.onBuildPlaylist}>Build Playlist</button>
                 }
                 {
                     !IS_LOGGED_IN &&
