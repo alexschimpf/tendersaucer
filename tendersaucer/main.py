@@ -79,13 +79,17 @@ def get_task_status(task_id):
     message = None
     progress = 0.0
     result = AsyncResult(id=task_id, app=celery_app)
-    if result.state == 'SUCCESS':
-        progress = 100.0
-    elif result.state == 'FAILURE':
+    if result.state in ('SUCCESS', 'FAILURE'):
         progress = 100.0
         result_meta = result.backend.get(result.backend.get_key_for_task(result.id))
         result_meta = json.loads(result_meta.decode('utf8'))
-        message = result_meta['result']['exc_message']
+        if result.state == 'SUCCESS':
+            message = result_meta['result']['message']
+        else:
+            if result_meta['result']['exc_type'] == 'EXPECTED':
+                message = result_meta['result']['exc_message']
+            else:
+                message = 'There was a problem generating your playlist. Please try again.'
 
     return jsonify(progress=progress, state=result.state, message=message)
 

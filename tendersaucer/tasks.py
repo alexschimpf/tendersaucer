@@ -9,10 +9,12 @@ from tendersaucer.db.tendersaucer import top_tracks
 from tendersaucer.service.spotify_client import Spotify
 
 
+MAX_NUM_TRACKS = 50
+
 app = Celery('tendersaucer.tasks', **APP_CONFIG['celery'])
 
 
-@app.task(bind=True)
+@app.task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 1})
 def build_personalized_playlist(
         self, spotify_access_token, playlist_name, time_ranges, artist_popularity_range,
         track_release_year_range, track_danceability_range, track_tempo_range, included_genres,
@@ -58,12 +60,25 @@ def build_personalized_playlist(
     track_ids = top_tracks.get_tracks(
         artist_ids=seed_artist_ids, tempo_range=track_tempo_range,
         release_year_range=track_release_year_range, danceability_range=track_danceability_range)
-    track_ids = random.sample(track_ids, min(len(track_ids), 50))
+    track_ids = random.sample(track_ids, min(len(track_ids), MAX_NUM_TRACKS))
 
     try:
         spotify_client.export_playlist(playlist_name=playlist_name, track_ids=track_ids)
     except utils.TendersaucerException as e:
         _set_failure_state(task=self, exception=e)
+        raise Ignore()
+
+    message = 'Your playlist has been created.'
+    if len(track_ids) < MAX_NUM_TRACKS:
+        message += ' However, your criteria may be too limiting. ' \
+                   'Try loosening your criteria for better results.'
+    self.update_state(
+        state=states.SUCCESS,
+        meta={
+            'message': message
+        }
+    )
+    raise Ignore()
 
 
 @app.task(bind=True)
@@ -91,12 +106,25 @@ def build_genre_playlist(
     track_ids = top_tracks.get_tracks(
         artist_ids=seed_artist_ids, tempo_range=track_tempo_range,
         release_year_range=track_release_year_range, danceability_range=track_danceability_range)
-    track_ids = random.sample(track_ids, min(len(track_ids), 50))
+    track_ids = random.sample(track_ids, min(len(track_ids), MAX_NUM_TRACKS))
 
     try:
         spotify_client.export_playlist(playlist_name=playlist_name, track_ids=track_ids)
     except utils.TendersaucerException as e:
         _set_failure_state(task=self, exception=e)
+        raise Ignore()
+
+    message = 'Your playlist has been created.'
+    if len(track_ids) < MAX_NUM_TRACKS:
+        message += ' However, your criteria may be too limiting. ' \
+                   'Try loosening your criteria for better results.'
+    self.update_state(
+        state=states.SUCCESS,
+        meta={
+            'message': message
+        }
+    )
+    raise Ignore()
 
 
 def _get_familiar_artists(spotify_client):
@@ -115,17 +143,15 @@ def _set_failure_state(task, exception):
         task.update_state(
             state=states.FAILURE,
             meta={
-                'exc_type': 'Expected',
+                'exc_type': 'EXPECTED',
                 'exc_message': str(exception)
             }
         )
-        raise Ignore()
     else:
         task.update_state(
             state=states.FAILURE,
             meta={
-                'exc_type': 'Unexpected',
+                'exc_type': 'UNEXPECTED',
                 'exc_message': 'Sorry, something went wrong. Please try again.'
             }
         )
-        raise Ignore()

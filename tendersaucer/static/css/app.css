@@ -39,6 +39,7 @@ h3 {
 
 .side-bar-section {
     width: 28%;
+    min-width: 220px;
     border-right-color: salmon;
     border-right-style: solid;
     border-right-width: 1px;
@@ -56,6 +57,7 @@ h3 {
     margin: -10px;
     height: 80px;
     margin-bottom: 40px;
+    min-width: 770px;
 }
 
 .top-bar-logo {

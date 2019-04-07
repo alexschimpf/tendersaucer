@@ -103,9 +103,9 @@ class Main extends React.Component {
                                 title: 'Success!',
                                 content: (
                                     <div>
-                                        <h3>Your playlist has been created.</h3>
+                                        <h3>{response.data.message}</h3>
                                         <div className="success-disclaimer">
-                                            (There may be a slight delay before it shows up in your Spotify account.)
+                                            (There may be a slight delay before your playlist shows up in your Spotify account.)
                                         </div>
                                     </div>
                                 )
@@ -148,7 +148,7 @@ class Main extends React.Component {
                 title: 'Oops!',
                 content: (
                     <div>
-                        <h3>There was an error generating your playlist. Please try again.</h3>
+                        <h3>There was a problem generating your playlist. Please try again.</h3>
                     </div>
                 )
             });
