@@ -38,6 +38,9 @@ class TopBar extends React.Component {
         this.props.onLoadingChanged(true);
         axios.get('/user_top_artists').then(response => {
             let artists = response.data.top_artists;
+            if (!artists || !artists.length) {
+                artists = ['Sorry, we couldn\'t determine your favorite artists.']
+            }
             artists = artists.map(artist =>
                 <h3 key={artist}>{artist}</h3>
             );
@@ -68,7 +71,10 @@ class TopBar extends React.Component {
         this.showLoadingPopup();
         this.props.onLoadingChanged(true);
         axios.get('/user_top_genres').then(response => {
-            let genres = response.data.top_genres;
+            let genres = response.data.top_genres
+            if (!genres || !genres.length) {
+                genres = ['Sorry, we couldn\'t determine you favorite genres.']
+            }
             genres = genres.map(genre =>
                 <h3 key={genre}>{genre.charAt(0).toUpperCase() + genre.slice(1)}</h3>
             );
