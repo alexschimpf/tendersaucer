@@ -176,7 +176,10 @@ class Main extends React.Component {
                                 <h3 className="pre-login-msg">
                                     Tendersaucer lets you generate custom Spotify playlists
                                     based on different criteria like genre, artist popularity,
-                                    empo, etc. Please log in to your Spotify account to continue.
+                                    empo, etc.
+                                </h3><br></br>
+                                <h3 className="pre-login-msg">
+                                    Please log in to your Spotify account to continue.
                                 </h3>
                             </div>
                     }

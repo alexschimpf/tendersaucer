@@ -231,7 +231,7 @@ h3 {
 }
 
 .pre-login-msg-div {
-    text-align: left;
+    text-align: center;
     width: 60%;
     grid-area: main;
     margin-top: 30px;
