@@ -201,7 +201,7 @@ class Main extends React.Component {
                             </div>
                     }
                     <div className="footer">
-                        <p>&copy; 2019 Tendersaucer</p>
+                        <p>&copy; 2019 Alex Schimpf</p>
                     </div>
                 </div>
             </div>
