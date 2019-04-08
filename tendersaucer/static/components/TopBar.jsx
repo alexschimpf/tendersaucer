@@ -105,7 +105,7 @@ class TopBar extends React.Component {
         return (
             <div className="top-bar-div">
                 <img src="static/images/tendersaucer.jpg" className="top-bar-logo"></img>
-                <h3 className="top-bar-title">TENDERSAUCER</h3>
+                <h3 className="top-bar-title">Tendersaucer</h3>
                 {
                     IS_LOGGED_IN &&
                         <button className="top-bar-btn build-playlist-btn" onClick={this.props.onBuildPlaylist}>Build Playlist</button>

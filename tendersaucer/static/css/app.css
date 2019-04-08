@@ -76,7 +76,8 @@ h3 {
     width: 80px;
     padding-top: 5px;
     float: left;
-    margin-left: 40px;
+    margin-left: 50px;
+    margin-right: 10px;
 }
 
 .top-bar-title {
@@ -178,13 +179,14 @@ h3 {
     outline: none;
     background: none;
     color: white;
-    font-size: 20px;
+    font-size: 24px;
     border-width: 0px;
     font-family: 'Ubuntu', sans-serif;
     font-weight: 400;
     display: inline-block;
     height: 100%;
     width: 160px;
+    min-width: 140px;
 }
 
 .top-bar-btn:hover {
