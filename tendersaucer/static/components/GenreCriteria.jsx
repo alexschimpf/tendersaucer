@@ -9,7 +9,8 @@ const SELECT_STYLES = {
     container: (styles, state) => ({
         ...styles,
         display: 'inline-block',
-        width: '400px',
+        width: '380px',
+        minWidth: '230px',
         marginTop: '10px',
         borderColor: 'salmon',
         float: 'left',
@@ -79,65 +80,46 @@ class GenreCriteria extends React.Component {
 
     render() {
         return (
-            <div>
-                <table>
-                    <tbody>
-                        <tr>
-                            <th>
-                                <h3 className="param-header">Artist Popularity</h3>
-                            </th>
-                            <th>
-                                <Range className="slider" defaultValue={[0, 100]} min={0} max={100}
-                                    handleStyle={{borderColor: 'salmon'}}
-                                    trackStyle={[{backgroundColor: 'salmon'}, {backgroundColor: 'salmon'}]}
-                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}
-                                    onChange={this.onArtistPopularityChanged} />
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>
-                                <h3 className="param-header">Track Release Year</h3>
-                            </th>
-                            <th>
-                                <Range className="slider" defaultValue={[1900, 2019]} min={1900} max={2019}
-                                    handleStyle={{borderColor: 'salmon'}}
-                                    trackStyle={[{backgroundColor: 'salmon'}, {backgroundColor: 'salmon'}]}
-                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}
-                                    onChange={this.onTrackReleaseYearChanged} />
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>
-                                <h3 className="param-header">Track Tempo</h3>
-                            </th>
-                            <th>
-                                <Range className="slider" defaultValue={[0, 250]} min={0} max={250}
-                                    handleStyle={{borderColor: 'salmon'}}
-                                    trackStyle={[{backgroundColor: 'salmon'}, {backgroundColor: 'salmon'}]}
-                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}
-                                    onChange={this.onTrackTempoChanged} />
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>
-                                <h3 className="param-header">Track Danceability</h3>
-                            </th>
-                            <th>
-                                <Range className="slider" defaultValue={[0, 100]} min={0} max={100}
-                                    handleStyle={{borderColor: 'salmon'}}
-                                    trackStyle={[{backgroundColor: 'salmon'}, {backgroundColor: 'salmon'}]}
-                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}
-                                    onChange={this.onTrackDanceabilityChanged} />
-                            </th>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <h3 className="param-header-outside-table genre-dropdown-label" >Genres</h3>
-                <WindowedSelect classNamePrefix="react-select" styles={SELECT_STYLES}
-                    options={this.props.genres} isMulti="true" placeholder="Enter genre name"
-                    menuPlacement="bottom"
-                    onChange={this.onGenresChanged} />
+            <div className="criteria-div">
+                <div style={{display: 'flex', alignItems: 'center'}}>
+                    <h3 className="param-header">Artist Popularity</h3>
+                    <Range className="slider" defaultValue={[0, 100]} min={0} max={100}
+                        handleStyle={{borderColor: 'salmon'}}
+                        trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
+                        railStyle={{backgroundColor: 'salmon'}} allowCross={false}
+                        onChange={this.onArtistPopularityChanged} />
+                </div>
+                <div className="criteria-row">
+                    <h3 className="param-header">Track Release Year</h3>
+                    <Range className="slider" defaultValue={[1900, 2019]} min={1900} max={2019}
+                        handleStyle={{borderColor: 'salmon'}}
+                        trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
+                        railStyle={{backgroundColor: 'salmon'}} allowCross={false}
+                        onChange={this.onTrackReleaseYearChanged} />
+                </div>
+                <div className="criteria-row">
+                    <h3 className="param-header">Track Tempo</h3>
+                    <Range className="slider" defaultValue={[0, 250]} min={0} max={250}
+                        handleStyle={{borderColor: 'salmon'}}
+                        trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
+                        railStyle={{backgroundColor: 'salmon'}} allowCross={false}
+                        onChange={this.onTrackTempoChanged} />
+                </div>
+                <div className="criteria-row">
+                    <h3 className="param-header">Track Danceability</h3>
+                    <Range className="slider" defaultValue={[0, 100]} min={0} max={100}
+                        handleStyle={{borderColor: 'salmon'}}
+                        trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
+                        railStyle={{backgroundColor: 'salmon'}} allowCross={false}
+                        onChange={this.onTrackDanceabilityChanged} />
+                </div>
+                <div className="criteria-row">
+                    <h3 className="param-header">Genres</h3>
+                    <WindowedSelect classNamePrefix="react-select" styles={SELECT_STYLES}
+                        options={this.props.genres} isMulti="true" placeholder="Enter genre name"
+                        menuPlacement="bottom"
+                        onChange={this.onGenresChanged} />
+                </div>
             </div>
         )
     }

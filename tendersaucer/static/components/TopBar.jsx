@@ -117,7 +117,7 @@ class TopBar extends React.Component {
                 }
                 {
                     !IS_LOGGED_IN &&
-                        <button className="top-bar-btn" onClick={() => location.href = '/get_spotify_auth'}>Login</button>
+                        <button className="top-bar-btn login-btn" onClick={() => location.href = '/get_spotify_auth'}>Login</button>
                 }
             </div>
         )

@@ -62,95 +62,69 @@ class FavoriteArtistsCriteria extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="criteria-div">
                 <ReactTooltip effect="solid" className="tooltip"/>
-                <table>
-                    <tbody>
-                        <tr>
-                            <th>
-                                <h3 className="param-header">Artist Popularity</h3>
-                            </th>
-                            <th>
-                                <Range className="slider" defaultValue={[0, 100]} min={0} max={100}
-                                    handleStyle={{borderColor: 'salmon'}}
-                                    trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
-                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}
-                                    onChange={this.onArtistPopularityChanged} />
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>
-                                <h3 className="param-header">Track Release Year</h3>
-                            </th>
-                            <th>
-                                <Range className="slider" defaultValue={[1900, 2019]} min={1900} max={2019}
-                                    handleStyle={{borderColor: 'salmon'}}
-                                    trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
-                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}
-                                    onChange={this.onTrackReleaseYearChanged} />
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>
-                                <h3 className="param-header">Track Tempo</h3>
-                            </th>
-                            <th>
-                                <Range className="slider" defaultValue={[0, 250]} min={0} max={250}
-                                    handleStyle={{borderColor: 'salmon'}}
-                                    trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
-                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}
-                                    onChange={this.onTrackTempoChanged} />
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>
-                                <h3 className="param-header">Track Danceability</h3>
-                            </th>
-                            <th>
-                                <Range className="slider" defaultValue={[0, 100]} min={0} max={100}
-                                    handleStyle={{borderColor: 'salmon'}}
-                                    trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
-                                    railStyle={{backgroundColor: 'salmon'}} allowCross={false}
-                                    onChange={this.onTrackDanceabilityChanged} />
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>
-                                <span className="param-header">
-                                    <h3 className="info-icon-param-header">Adventurousness</h3>
-                                    <InfoIcon message="This scale represents how much you want your playlist to
-                                                       deviate from your favorite artists. 0 means you only want
-                                                       listen to artists you know. 3 means you're willing to listen
-                                                       to artists who are more different than your favorite artists." />
-                                </span>
-                            </th>
-                            <th>
-                                <SliderWithTooltip className="slider" defaultValue={3} min={0} max={3}
-                                    handleStyle={{borderColor: 'salmon'}}
-                                    trackStyle={{backgroundColor: 'salmon'}}
-                                    railStyle={{backgroundColor: 'salmon'}}
-                                    onChange={this.onAdventurousnessChanged} />
-                            </th>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <span className="param-header-outside-table" style={{marginTop: '5px'}}>
-                    <h3 className="info-icon-param-header">Artist Time Range</h3>
-                    <InfoIcon message="This is used to help identify your favorite artists -
-                                       whether or not to consider artists you've listened
-                                       to in the short term, medium term, and/or long term." />
-                </span>
-
-                <button className="btn default artist-time-range-first-btn"
-                    style={{background: this.state.artistTimeRanges.indexOf('short_term') > -1 ? '#EFEFEF' : '#FFFFFF'}}
-                    onClick={() => this.addOrRemoveArtistTimeRange('short_term')}>Short Term</button>
-                <button className="btn default artist-time-range-btn"
-                    style={{background: this.state.artistTimeRanges.indexOf('medium_term') > -1 ? '#EFEFEF' : '#FFFFFF'}}
-                    onClick={() => this.addOrRemoveArtistTimeRange('medium_term')}>Medium Term</button>
-                <button className="btn default artist-time-range-btn"
-                    style={{background: this.state.artistTimeRanges.indexOf('long_term') > -1 ? '#EFEFEF' : '#FFFFFF'}}
-                    onClick={() => this.addOrRemoveArtistTimeRange('long_term')}>Long Term</button>
+                <div style={{display: 'flex', alignItems: 'center'}}>
+                    <h3 className="param-header">Artist Popularity</h3>
+                    <Range className="slider" defaultValue={[0, 100]} min={0} max={100}
+                        handleStyle={{borderColor: 'salmon'}}
+                        trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
+                        railStyle={{backgroundColor: 'salmon'}} allowCross={false}
+                        onChange={this.onArtistPopularityChanged} />
+                </div>
+                <div className="criteria-row">
+                    <h3 className="param-header">Track Release Year</h3>
+                    <Range className="slider" defaultValue={[1900, 2019]} min={1900} max={2019}
+                        handleStyle={{borderColor: 'salmon'}}
+                        trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
+                        railStyle={{backgroundColor: 'salmon'}} allowCross={false}
+                        onChange={this.onTrackReleaseYearChanged} />
+                </div>
+                <div className="criteria-row">
+                    <h3 className="param-header">Track Tempo</h3>
+                    <Range className="slider" defaultValue={[0, 250]} min={0} max={250}
+                        handleStyle={{borderColor: 'salmon'}}
+                        trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
+                        railStyle={{backgroundColor: 'salmon'}} allowCross={false}
+                        onChange={this.onTrackTempoChanged} />
+                </div>
+                <div className="criteria-row">
+                    <h3 className="param-header">Track Danceability</h3>
+                    <Range className="slider" defaultValue={[0, 100]} min={0} max={100}
+                        handleStyle={{borderColor: 'salmon'}}
+                        trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
+                        railStyle={{backgroundColor: 'salmon'}} allowCross={false}
+                        onChange={this.onTrackDanceabilityChanged} />
+                </div>
+                <div className="criteria-row">
+                    <h3 className="adventurousness-param-header">Adventurousness</h3>
+                    <InfoIcon className="adventurousness-info-icon"
+                        message="This scale represents how much you want your playlist to
+                                 deviate from your favorite artists. 0 means you only want
+                                 listen to artists you know. 3 means you're willing to listen
+                                 to artists who are more different than your favorite artists." />
+                    <SliderWithTooltip className="slider" defaultValue={3} min={0} max={3}
+                        handleStyle={{borderColor: 'salmon'}}
+                        trackStyle={{backgroundColor: 'salmon'}}
+                        railStyle={{backgroundColor: 'salmon'}}
+                        onChange={this.onAdventurousnessChanged} />
+                </div>
+                <div className="criteria-row">
+                    <h3 className="artist-time-ranges-param-header">Artist Time Ranges</h3>
+                    <InfoIcon className="artist-time-ranges-info-icon"
+                        message="This is used to help identify your favorite artists -
+                                 whether or not to consider artists you've listened
+                                 to in the short term, medium term, and/or long term." />
+                    <button className="btn default artist-time-range-first-btn"
+                        style={{background: this.state.artistTimeRanges.indexOf('short_term') > -1 ? '#EFEFEF' : '#FFFFFF'}}
+                        onClick={() => this.addOrRemoveArtistTimeRange('short_term')}>Short Term</button>
+                    <button className="btn default artist-time-range-btn"
+                        style={{background: this.state.artistTimeRanges.indexOf('medium_term') > -1 ? '#EFEFEF' : '#FFFFFF'}}
+                        onClick={() => this.addOrRemoveArtistTimeRange('medium_term')}>Medium Term</button>
+                    <button className="btn default artist-time-range-btn"
+                        style={{background: this.state.artistTimeRanges.indexOf('long_term') > -1 ? '#EFEFEF' : '#FFFFFF'}}
+                        onClick={() => this.addOrRemoveArtistTimeRange('long_term')}>Long Term</button>
+                </div>
             </div>
         )
     }

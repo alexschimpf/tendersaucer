@@ -159,35 +159,31 @@ class Main extends React.Component {
         return (
             <div>
                 <Popup closeBtn={!this.state.taskId} closeOnOutsideClick={false} />
-                <TopBar onBuildPlaylist={this.onBuildPlaylist} />
-                {
-                    IS_LOGGED_IN ?
-                        <table className="main-table">
-                            <tbody>
-                                <tr>
-                                    <th className="side-bar-section">
-                                        <SideBar onFormChanged={this.onFormChanged} />
-                                    </th>
-
-                                    <th className="criteria-section">
-                                        {
-                                            this.state.playlistType == 'genre' ?
-                                                <GenreCriteria genres={GENRE_OPTIONS}
-                                                    onFormChanged={this.onFormChanged} /> :
-                                                <FavoriteArtistsCriteria onFormChanged={this.onFormChanged} />
-                                        }
-                                    </th>
-                                </tr>
-                            </tbody>
-                        </table> :
-                        <div className="pre-login-msg-div">
-                            <h3 className="pre-login-msg">
-                                Tendersaucer lets you generate custom Spotify playlists
-                                based on different criteria like genre, artist popularity,
-                                empo, etc. Please log in to your Spotify account to continue.
-                            </h3>
-                        </div>
+                <div className="main-grid">
+                    <TopBar onBuildPlaylist={this.onBuildPlaylist} />
+                    {
+                        IS_LOGGED_IN &&
+                            <SideBar onFormChanged={this.onFormChanged} />
                     }
+                    {
+                        IS_LOGGED_IN ?
+                            (
+                                this.state.playlistType == 'genre' ?
+                                    <GenreCriteria genres={GENRE_OPTIONS} onFormChanged={this.onFormChanged} /> :
+                                    <FavoriteArtistsCriteria onFormChanged={this.onFormChanged} />
+                            ) :
+                            <div className="pre-login-msg-div">
+                                <h3 className="pre-login-msg">
+                                    Tendersaucer lets you generate custom Spotify playlists
+                                    based on different criteria like genre, artist popularity,
+                                    empo, etc. Please log in to your Spotify account to continue.
+                                </h3>
+                            </div>
+                    }
+                    <div className="footer">
+                        <p>&copy; 2019 Tendersaucer</p>
+                    </div>
+                </div>
             </div>
         )
     }

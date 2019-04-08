@@ -26,7 +26,7 @@ class SideBar extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="side-bar-div">
                 <ReactTooltip effect="solid" className="tooltip"/>
                 <h3>Playlist Name</h3>
                 <input className="playlist-name" type="text"
