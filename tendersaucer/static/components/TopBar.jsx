@@ -9,6 +9,10 @@ class TopBar extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            isLoading: false
+        };
+
         this.logout = this.logout.bind(this);
         this.showLoadingPopup = this.showLoadingPopup.bind(this);
         this.showFavoriteArtists = this.showFavoriteArtists.bind(this);
@@ -31,10 +35,11 @@ class TopBar extends React.Component {
 
     showFavoriteArtists() {
         this.showLoadingPopup();
+        this.props.onLoadingChanged(true);
         axios.get('/user_top_artists').then(response => {
             let artists = response.data.top_artists;
             artists = artists.map(artist =>
-                <h3>{artist}</h3>
+                <h3 key={artist}>{artist}</h3>
             );
 
             Popup.close();
@@ -54,16 +59,18 @@ class TopBar extends React.Component {
                     <h3>There was an error getting your favorite artists. Please try again.</h3>
                 )
             });
+        }).finally(() => {
+            this.props.onLoadingChanged(false);
         });
     }
 
     showFavoriteGenres() {
         this.showLoadingPopup();
+        this.props.onLoadingChanged(true);
         axios.get('/user_top_genres').then(response => {
-            let i = 1;
             let genres = response.data.top_genres;
             genres = genres.map(genre =>
-                <h3>{genre.charAt(0).toUpperCase() + genre.slice(1)}</h3>
+                <h3 key={genre}>{genre.charAt(0).toUpperCase() + genre.slice(1)}</h3>
             );
 
             Popup.close();
@@ -83,6 +90,8 @@ class TopBar extends React.Component {
                     <h3>There was an error getting your favorite genres. Please try again.</h3>
                 )
             });
+        }).finally(() => {
+            this.props.onLoadingChanged(false);
         });
     }
 
@@ -95,7 +104,6 @@ class TopBar extends React.Component {
     render() {
         return (
             <div className="top-bar-div">
-                <Popup closeOnOutsideClick={false} />
                 <img src="static/images/tendersaucer.jpg" className="top-bar-logo"></img>
                 <h3 className="top-bar-title">TENDERSAUCER</h3>
                 {
@@ -105,12 +113,12 @@ class TopBar extends React.Component {
                 {
                     IS_LOGGED_IN &&
                         <Menu
-                            trigger={<button className="top-bar-btn">Account</button>}
+                            trigger={<img src="static/images/caret-down.png" className="top-bar-btn"></img>}
                             position="bottom center" on="click" mouseLeaveDelay={300} mouseEnterDelay={0}
                             contentStyle={{ padding: '0px', border: 'none', width: '160px' }} arrow={false} closeOnDocumentClick>
                             <div className="account-menu">
-                                <button className="account-menu-btn" onClick={this.showFavoriteArtists}>Show Favorite Artists</button><br></br>
-                                <button className="account-menu-btn" onClick={this.showFavoriteGenres}>Show Favorite Genres</button><br></br>
+                                <button className="account-menu-btn" onClick={this.showFavoriteArtists}>Your Favorite Artists</button><br></br>
+                                <button className="account-menu-btn" onClick={this.showFavoriteGenres}>Your Favorite Genres</button><br></br>
                                 <button className="account-menu-btn" onClick={this.logout}>Logout</button>
                             </div>
                         </Menu>

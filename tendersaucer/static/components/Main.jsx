@@ -31,7 +31,8 @@ class Main extends React.Component {
             adventurousness: 3,
             artistTimeRanges: [],
             genres: [],
-            tableClassName: null
+            tableClassName: null,
+            isLoading: false
         };
 
         this.onFormChanged = this.onFormChanged.bind(this);
@@ -41,11 +42,18 @@ class Main extends React.Component {
         this.setProgressInterval = this.setProgressInterval.bind(this);
         this.showProcessingPopup = this.showProcessingPopup.bind(this);
         this.showSuccessPopup = this.showSuccessPopup.bind(this);
+        this.onLoadingChanged = this.onLoadingChanged.bind(this);
     }
 
     onFormChanged(key, value) {
         this.setState({
             [key]: value
+        });
+    }
+
+    onLoadingChanged(isLoading) {
+        this.setState({
+            isLoading: isLoading
         });
     }
 
@@ -73,8 +81,9 @@ class Main extends React.Component {
             let progressInterval = this.setProgressInterval(taskId);
             this.setState({
                 taskId: taskId,
-                progressInterval: progressInterval
-            })
+                progressInterval: progressInterval,
+                isLoading: true
+            });
 
             this.showProcessingPopup();
         }).catch(error => {
@@ -91,6 +100,7 @@ class Main extends React.Component {
                     this.setState({
                         taskId: null,
                         progressInterval: null,
+                        isLoading: false,
                         message: response.data.message
                     });
 
@@ -165,9 +175,9 @@ class Main extends React.Component {
     render() {
         return (
             <div>
-                <Popup closeBtn={!this.state.taskId} closeOnOutsideClick={false} />
+                <Popup closeOnOutsideClick={false} closeBtn={!this.state.isLoading} />
                 <div className="main-grid">
-                    <TopBar onBuildPlaylist={this.onBuildPlaylist} />
+                    <TopBar onBuildPlaylist={this.onBuildPlaylist} onLoadingChanged={this.onLoadingChanged} />
                     {
                         IS_LOGGED_IN &&
                             <SideBar onFormChanged={this.onFormChanged} />

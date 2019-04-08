@@ -88,7 +88,7 @@
     .mm-popup__box {
         width: 350px;
         position: fixed;
-        top: 20%;
+        top: 10%;
         left: 50%;
         margin-left: -175px;
         background: #fff;
