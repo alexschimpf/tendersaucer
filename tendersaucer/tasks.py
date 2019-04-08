@@ -14,7 +14,7 @@ MAX_NUM_TRACKS = 50
 app = Celery('tendersaucer.tasks', **APP_CONFIG['celery'])
 
 
-@app.task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 1})
+@app.task(bind=True)
 def build_personalized_playlist(
         self, spotify_access_token, playlist_name, time_ranges, artist_popularity_range,
         track_release_year_range, track_danceability_range, track_tempo_range, included_genres,

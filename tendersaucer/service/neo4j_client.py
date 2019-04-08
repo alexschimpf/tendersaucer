@@ -73,9 +73,10 @@ def get_artists_from_genres(genres):
 def get_all_genres(skip_cache=False):
     global _GENRES
     if skip_cache or not _GENRES:
-        query = 'MATCH (g:Genre) return g.name'
-        result = _get_graph().run(query)
-        _GENRES = list(map(lambda genre: genre['g.name'], result))
+        _GENRES = ['rock', 'rap', 'pop', 'country']
+        # query = 'MATCH (g:Genre) return g.name'
+        # result = _get_graph().run(query)
+        # _GENRES = list(map(lambda genre: genre['g.name'], result))
         return _GENRES
     else:
         return _GENRES

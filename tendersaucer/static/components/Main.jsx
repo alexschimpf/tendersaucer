@@ -36,6 +36,11 @@ class Main extends React.Component {
 
         this.onFormChanged = this.onFormChanged.bind(this);
         this.onBuildPlaylist = this.onBuildPlaylist.bind(this);
+        this.showBasicPopup = this.showBasicPopup.bind(this);
+        this.checkRequiredFields = this.checkRequiredFields.bind(this);
+        this.setProgressInterval = this.setProgressInterval.bind(this);
+        this.showProcessingPopup = this.showProcessingPopup.bind(this);
+        this.showSuccessPopup = this.showSuccessPopup.bind(this);
     }
 
     onFormChanged(key, value) {
@@ -45,30 +50,9 @@ class Main extends React.Component {
     }
 
     onBuildPlaylist() {
-        let self = this;
-
-        let errorMessage = null;
-        if (!this.state.playlistName) {
-            errorMessage = 'Please provide a playlist name.';
-        } else if (this.state.playlistType == 'genre') {
-            if (!this.state.genres || !this.state.genres.length) {
-                errorMessage = 'Please select at least one genre.';
-            }
-        } else {
-            if (!this.state.artistTimeRanges || !this.state.artistTimeRanges.length) {
-                errorMessage = 'Please select at least one artist time range.';
-            }
-        }
-
+        let errorMessage = this.checkRequiredFields();
         if (errorMessage) {
-            Popup.create({
-                title: 'Whoa there!',
-                content: (
-                    <div>
-                        <h3>{errorMessage}</h3>
-                    </div>
-                )
-            });
+            this.showBasicPopup('Whoa there!', errorMessage);
             return;
         }
 
@@ -86,72 +70,95 @@ class Main extends React.Component {
             }
         }).then(response => {
             let taskId = response.data.task_id;
-            let progressInterval = setInterval(() => {
-                axios.get('/task/' + taskId + '/status').then(response => {
-                    if (response.data.progress === 100) {
-                        clearInterval(this.state.progressInterval);
-                        this.setState({
-                            taskId: null,
-                            progressInterval: null,
-                            message: response.data.message
-                        });
-
-                        Popup.close();
-
-                        if (response.data.state === 'SUCCESS') {
-                            Popup.create({
-                                title: 'Success!',
-                                content: (
-                                    <div>
-                                        <h3>{response.data.message}</h3>
-                                        <div className="success-disclaimer">
-                                            (There may be a slight delay before your playlist shows up in your Spotify account.)
-                                        </div>
-                                    </div>
-                                )
-                            });
-                        } else {
-                            Popup.create({
-                                title: 'Oops!',
-                                content: (
-                                    <div>
-                                        <h3>{response.data.message}</h3>
-                                    </div>
-                                )
-                            });
-                        }
-
-                    }
-                });
-            }, 1000);
-
-            self.setState({
+            let progressInterval = this.setProgressInterval(taskId);
+            this.setState({
                 taskId: taskId,
                 progressInterval: progressInterval
             })
 
-            Popup.create({
-                title: 'Processing',
-                content: (
-                    <div className="loader-div">
-                        <h3>Hang tight. This could take a minute.</h3>
-                        <div>
-                            <Loader type="Oval" color="orange" height="50" width="50" />
-                        </div>
-                    </div>
-                )
-            });
+            this.showProcessingPopup();
         }).catch(error => {
             console.log(error);
+            this.showBasicPopup('Oops!', 'There was a problem generating your playlist. Please try again.');
+        });
+    }
 
-            Popup.create({
-                title: 'Oops!',
-                content: (
-                    <div>
-                        <h3>There was a problem generating your playlist. Please try again.</h3>
-                    </div>
-                )
+    setProgressInterval(taskId) {
+        return setInterval(() => {
+            axios.get('/task/' + taskId + '/status').then(response => {
+                if (response.data.progress === 100) {
+                    clearInterval(this.state.progressInterval);
+                    this.setState({
+                        taskId: null,
+                        progressInterval: null,
+                        message: response.data.message
+                    });
+
+                    Popup.close();
+
+                    if (response.data.state === 'SUCCESS') {
+                        this.showSuccessPopup(response.data.message);
+                    } else {
+                        this.showBasicPopup('Oops!', response.data.message);
+                    }
+                }
             });
+        }, 1000);
+    }
+
+    checkRequiredFields() {
+        let errorMessage = null;
+        if (!this.state.playlistName) {
+            errorMessage = 'Please provide a playlist name.';
+        } else if (this.state.playlistType == 'genre') {
+            if (!this.state.genres || !this.state.genres.length) {
+                errorMessage = 'Please select at least one genre.';
+            }
+        } else {
+            if (!this.state.artistTimeRanges || !this.state.artistTimeRanges.length) {
+                errorMessage = 'Please select at least one artist time range.';
+            }
+        }
+
+        return errorMessage;
+    }
+
+    showBasicPopup(title, message) {
+        Popup.create({
+            title: title,
+            content: (
+                <div>
+                    <h3>{message}</h3>
+                </div>
+            )
+        });
+    }
+
+    showProcessingPopup() {
+        Popup.create({
+            title: 'Processing',
+            content: (
+                <div className="loader-div">
+                    <h3>Hang tight. This could take a minute.</h3>
+                    <div>
+                        <Loader type="Oval" color="orange" height="50" width="50" />
+                    </div>
+                </div>
+            )
+        });
+    }
+
+    showSuccessPopup(message) {
+        Popup.create({
+            title: 'Success!',
+            content: (
+                <div>
+                    <h3>{message}</h3>
+                    <div className="success-disclaimer">
+                        (There may be a slight delay before your playlist shows up in your Spotify account.)
+                    </div>
+                </div>
+            )
         });
     }
 
