@@ -1,0 +1,14 @@
+[Unit]
+Description=Tendersaucer Service
+After=network.target mysql.service redis.service celery.service
+
+[Service]
+Type=forking
+User=alexschimpf
+WorkingDirectory=/home/alexschimpf/projects/tendersaucer
+ExecStart=/home/alexschimpf/.virtualenvs/tendersaucer/bin/uwsgi -H /home/alexschimpf/.virtualenvs/tendersaucer --ini /home/alexschimpf/projects/tendersaucer/config/uwsgi.ini
+Restart=always
+PIDFile=/var/run/tendersaucer/uwsgi.pid
+
+[Install]
+WantedBy=multi-user.target
