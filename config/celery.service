@@ -1,0 +1,13 @@
+[Unit]
+Description=Celery Workers Service
+After=network.target redis.service
+
+[Service]
+Type=simple
+User=alexschimpf
+WorkingDirectory=/home/alexschimpf/projects/tendersaucer
+ExecStart=/bin/sh -c "PYTHONPATH=/home/alexschimpf/.virtualenvs/tendersaucer /home/alexschimpf/.virtualenvs/tendersaucer/bin/celery -A tendersaucer.tasks worker --loglevel=info -f /var/log/tendersaucer/celery.log"
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

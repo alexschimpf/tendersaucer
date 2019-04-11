@@ -12,3 +12,4 @@ PIDFile=/var/run/tendersaucer/uwsgi.pid
 
 [Install]
 WantedBy=multi-user.target
+~
