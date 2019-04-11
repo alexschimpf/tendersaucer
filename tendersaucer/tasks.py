@@ -10,6 +10,12 @@ from tendersaucer.service.spotify_client import Spotify
 
 
 MAX_NUM_TRACKS = 50
+MAX_NUM_SEED_ARTISTS_BY_SEARCH_DEPTH = {
+    0: None,
+    1: None,
+    2: 100,
+    3: 50
+}
 
 app = Celery('tendersaucer.tasks', **APP_CONFIG['celery'])
 
@@ -24,13 +30,18 @@ def build_personalized_playlist(
 
     spotify_client = Spotify(auth=spotify_access_token)
 
-    # Get related artists of user's favorite artists
     user_top_artists = spotify_client.get_user_top_artists(time_ranges=time_ranges)
+    max_num_seed_artists = MAX_NUM_SEED_ARTISTS_BY_SEARCH_DEPTH[max_search_depth]
+    if max_num_seed_artists:
+        user_top_artists = random.sample(user_top_artists, min(len(user_top_artists), max_num_seed_artists))
+
     seed_artists = list(user_top_artists)
-    for user_top_artist in user_top_artists:
-        related_artists = neo4j_client.get_related_artists(
-            artist_id=user_top_artist['id'], max_num_hops=max_search_depth)
-        seed_artists.extend(related_artists)
+    if max_search_depth:
+        # Get related artists of user's favorite artists
+        for user_top_artist in user_top_artists:
+            related_artists = neo4j_client.get_related_artists(
+                artist_id=user_top_artist['id'], max_num_hops=max_search_depth)
+            seed_artists.extend(related_artists)
 
     excluded_artists = set()
     if exclude_familiar_artists:
@@ -39,7 +50,8 @@ def build_personalized_playlist(
     # Filter out artists that don't meet criteria
     seed_artist_ids = set()
     for seed_artist in seed_artists:
-        if artist_popularity_range[0] <= seed_artist['popularity'] <= artist_popularity_range[1] and \
+        artist_popularity = seed_artist['popularity'] or 0
+        if artist_popularity_range[0] <= artist_popularity <= artist_popularity_range[1] and \
                 seed_artist['id'] not in excluded_artists:
             seed_artist_ids.add(seed_artist['id'])
     seed_artist_ids = random.sample(seed_artist_ids, min(len(seed_artist_ids), 1000))
@@ -97,7 +109,8 @@ def build_genre_playlist(
     # Filter out artists that don't meet criteria
     seed_artist_ids = set()
     for seed_artist in seed_artists:
-        if artist_popularity_range[0] <= seed_artist['popularity'] <= artist_popularity_range[1] and \
+        artist_popularity = seed_artist['popularity'] or 0
+        if artist_popularity_range[0] <= artist_popularity <= artist_popularity_range[1] and \
                 seed_artist['id'] not in excluded_artists:
             seed_artist_ids.add(seed_artist['id'])
 
