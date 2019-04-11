@@ -7,9 +7,11 @@ from tendersaucer.config import APP_CONFIG
 from tendersaucer.service import neo4j_client
 from tendersaucer.db.tendersaucer import top_tracks
 from tendersaucer.service.spotify_client import Spotify
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
 MAX_NUM_TRACKS = 50
+NUM_THREAD_WORKERS = 4
 MAX_NUM_SEED_ARTISTS_BY_SEARCH_DEPTH = {
     0: None,
     1: None,
@@ -38,10 +40,15 @@ def build_personalized_playlist(
     seed_artists = list(user_top_artists)
     if max_search_depth:
         # Get related artists of user's favorite artists
-        for user_top_artist in user_top_artists:
-            related_artists = neo4j_client.get_related_artists(
-                artist_id=user_top_artist['id'], max_num_hops=max_search_depth)
-            seed_artists.extend(related_artists)
+        with ThreadPoolExecutor(max_workers=NUM_THREAD_WORKERS) as executor:
+            futures = []
+            for user_top_artist in user_top_artists:
+                future = executor.submit(
+                    neo4j_client.get_related_artists,
+                    artist_id=user_top_artist['id'], max_num_hops=max_search_depth)
+                futures.append(future)
+            for future in as_completed(futures):
+                seed_artists.extend(future.result() or ())
 
     excluded_artists = set()
     if exclude_familiar_artists:

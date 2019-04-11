@@ -1,20 +1,20 @@
 {
     "environment": "dev",
     "celery": {
-        "backend": "redis://127.0.0.1:6380/1",
-        "broker": "redis://127.0.0.1:6380/2"
+        "backend": "redis://127.0.0.1:6379/1",
+        "broker": "redis://127.0.0.1:6379/2"
     },
     "mysql": {
-        "host": "tendersaucer_mysql",
+        "host": "127.0.0.1",
         "port": 3306,
         "database": "tendersaucer",
         "user": "root",
-        "password": "root",
+        "password": "Mullen23?",
         "pool_size": 5
     },
     "redis": {
         "session": {
-            "host": "tendersaucer_redis",
+            "host": "127.0.0.1",
             "port": 6379,
             "db": 0,
             "max_connections": 1000
@@ -22,12 +22,12 @@
     },
     "neo4j": {
         "user": "neo4j",
-        "password": "neo4j",
-        "uri": "bolt://tendersaucer_neo4j:7687"
+        "password": "Mullen23?",
+        "uri": "http://0.0.0.0:7474"
     },
     "spotify": {
-        "client_id": null,
-        "client_secret": null,
+        "client_id": "91995bc23fd24cd8b6dc67616443a3cf",
+        "client_secret": "39cce37e6dab4368a1189c569cbed573",
         "redirect_url": "http://0.0.0.0:5000/spotify_callback"
     },
     "logging": {
