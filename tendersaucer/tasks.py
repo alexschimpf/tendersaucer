@@ -25,10 +25,11 @@ def build_personalized_playlist(
     spotify_client = Spotify(auth=spotify_access_token)
 
     # Get related artists of user's favorite artists
-    seed_artists = spotify_client.get_user_top_artists(time_ranges=time_ranges)
-    for seed_artist in seed_artists:
+    user_top_artists = spotify_client.get_user_top_artists(time_ranges=time_ranges)
+    seed_artists = list(user_top_artists)
+    for user_top_artist in user_top_artists:
         related_artists = neo4j_client.get_related_artists(
-            artist_id=seed_artist['id'], max_num_hops=max_search_depth)
+            artist_id=user_top_artist['id'], max_num_hops=max_search_depth)
         seed_artists.extend(related_artists)
 
     excluded_artists = set()
