@@ -76,6 +76,12 @@ def build_personalized_playlist(
                         (not included_genres or genres.intersection(included_genres)):
                     seed_artist_ids.add(item['id'])
 
+    if not seed_artist_ids:
+        _set_failure_state(
+            task=self, exception=utils.TendersaucerException(
+                'Your criteria is too limiting. Please loosen your criteria and try again.'))
+        raise Ignore()
+
     # Get filtered artists' tracks that meet criteria
     track_ids = top_tracks.get_tracks(
         artist_ids=seed_artist_ids, tempo_range=track_tempo_range,
@@ -122,6 +128,11 @@ def build_genre_playlist(
             seed_artist_ids.add(seed_artist['id'])
 
     seed_artist_ids = random.sample(seed_artist_ids, min(len(seed_artist_ids), 1000))
+    if not seed_artist_ids:
+        _set_failure_state(
+            task=self, exception=utils.TendersaucerException(
+                'Your criteria is too limiting. Please loosen your criteria and try again.'))
+        raise Ignore()
 
     # Fetch filtered artists' tracks that meet criteria
     track_ids = top_tracks.get_tracks(
