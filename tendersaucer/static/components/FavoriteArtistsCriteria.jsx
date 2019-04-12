@@ -111,7 +111,7 @@ class FavoriteArtistsCriteria extends React.Component {
                                  deviate from your favorite artists. 0 means you only want
                                  listen to artists you know. 3 means you're willing to listen
                                  to artists who are more different than your favorite artists." />
-                    <SliderWithTooltip className="slider" defaultValue={1} min={0} max={3}
+                    <SliderWithTooltip className="slider" defaultValue={0} min={0} max={3}
                         handleStyle={{borderColor: 'salmon'}}
                         trackStyle={{backgroundColor: 'salmon'}}
                         railStyle={{backgroundColor: 'salmon'}}

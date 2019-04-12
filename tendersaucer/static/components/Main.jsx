@@ -28,7 +28,7 @@ class Main extends React.Component {
             trackReleaseYear: [1900, currYear],
             trackTempo: [0, 250],
             trackDanceability: [0, 100],
-            adventurousness: 1,
+            adventurousness: 0,
             artistTimeRanges: [],
             genres: [],
             tableClassName: null,
