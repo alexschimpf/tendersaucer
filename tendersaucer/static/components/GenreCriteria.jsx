@@ -1,4 +1,5 @@
 import 'rc-slider/assets/index.css';
+import InfoIcon from './InfoIcon';
 import WindowedSelect from "react-windowed-select";
 import Slider, { createSliderWithTooltip } from 'rc-slider';
 
@@ -98,7 +99,10 @@ class GenreCriteria extends React.Component {
                         onChange={this.onTrackReleaseYearChanged} />
                 </div>
                 <div className="criteria-row">
-                    <h3 className="param-header">Track Tempo</h3>
+                    <h3 className="tempo-param-header">Track Tempo</h3>
+                    <InfoIcon className="tempo-info-icon"
+                        message="Tempo is measured in beats per minute.
+                                 A higher value means a faster-paced track." />
                     <Range className="slider" defaultValue={[0, 250]} min={0} max={250}
                         handleStyle={{borderColor: 'salmon'}}
                         trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}

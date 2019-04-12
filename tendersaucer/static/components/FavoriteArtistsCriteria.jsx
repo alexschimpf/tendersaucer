@@ -23,6 +23,7 @@ class FavoriteArtistsCriteria extends React.Component {
         this.onTrackTempoChanged = this.onTrackTempoChanged.bind(this);
         this.onTrackDanceabilityChanged = this.onTrackDanceabilityChanged.bind(this);
         this.onAdventurousnessChanged = this.onAdventurousnessChanged.bind(this);
+        this.isTimeRangeSelected = this.isTimeRangeSelected.bind(this);
     }
 
     onArtistPopularityChanged(rangeValues) {
@@ -60,6 +61,10 @@ class FavoriteArtistsCriteria extends React.Component {
         this.props.onFormChanged('artistTimeRanges', newArtistTimeRanges);
     }
 
+    isTimeRangeSelected(timeRange) {
+        return this.state.artistTimeRanges.includes(timeRange);
+    }
+
     render() {
         return (
             <div className="criteria-div">
@@ -81,7 +86,10 @@ class FavoriteArtistsCriteria extends React.Component {
                         onChange={this.onTrackReleaseYearChanged} />
                 </div>
                 <div className="criteria-row">
-                    <h3 className="param-header">Track Tempo</h3>
+                    <h3 className="tempo-param-header">Track Tempo</h3>
+                    <InfoIcon className="tempo-info-icon"
+                        message="Tempo is measured in beats per minute.
+                                 A higher value means a faster-paced track." />
                     <Range className="slider" defaultValue={[0, 250]} min={0} max={250}
                         handleStyle={{borderColor: 'salmon'}}
                         trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
@@ -114,15 +122,19 @@ class FavoriteArtistsCriteria extends React.Component {
                     <InfoIcon className="artist-time-ranges-info-icon"
                         message="This is used to help identify your favorite artists -
                                  whether or not to consider artists you've listened
-                                 to in the short term, medium term, and/or long term." />
-                    <button className="btn default artist-time-range-first-btn"
-                        style={{background: this.state.artistTimeRanges.indexOf('short_term') > -1 ? '#EFEFEF' : '#FFFFFF'}}
+                                 to in the short term, medium term, and/or long term.
+                                 Multiple may be selected." />
+                    <button
+                        className={"btn default artist-time-range-first-btn " +
+                                    (this.isTimeRangeSelected('short_term') ? 'selected-btn' : '')}
                         onClick={() => this.addOrRemoveArtistTimeRange('short_term')}>Short Term</button>
-                    <button className="btn default artist-time-range-btn"
-                        style={{background: this.state.artistTimeRanges.indexOf('medium_term') > -1 ? '#EFEFEF' : '#FFFFFF'}}
+                    <button
+                        className={"btn default artist-time-range-btn " +
+                                    (this.isTimeRangeSelected('medium_term') ? 'selected-btn' : '')}
                         onClick={() => this.addOrRemoveArtistTimeRange('medium_term')}>Medium Term</button>
-                    <button className="btn default artist-time-range-btn"
-                        style={{background: this.state.artistTimeRanges.indexOf('long_term') > -1 ? '#EFEFEF' : '#FFFFFF'}}
+                    <button
+                        className={"btn default artist-time-range-btn " +
+                                    (this.isTimeRangeSelected('long_term') ? 'selected-btn' : '')}
                         onClick={() => this.addOrRemoveArtistTimeRange('long_term')}>Long Term</button>
                 </div>
             </div>

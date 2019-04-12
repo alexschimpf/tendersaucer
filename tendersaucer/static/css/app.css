@@ -73,8 +73,9 @@ h3 {
 }
 
 .top-bar-logo {
-    width: 80px;
-    padding-top: 5px;
+    width: 70px;
+    height: 60px;
+    padding-top: 10px;
     float: left;
     margin-left: 50px;
     margin-right: 10px;
@@ -83,10 +84,10 @@ h3 {
 .top-bar-title {
     display: inline-block;
     margin: 0;
-    padding: 20px;
-    font-size: 40px;
+    padding: 10px 20px 20px 10px;
+    font-size: 50px;
     color: white;
-    padding-left: 10px;
+    font-weight: 400;
 }
 
 .checkbox-label {
@@ -108,6 +109,16 @@ h3 {
 
 .adventurousness-info-icon {
     margin-right: 32px;
+}
+
+.tempo-param-header {
+    min-width: 92px;
+    margin-right: 0px;
+    font-size: 16px;
+}
+
+.tempo-info-icon {
+    margin-right: 64px;
 }
 
 .artist-time-ranges-param-header {
@@ -145,7 +156,10 @@ h3 {
 
 .default:hover {
     background: #EFEFEF;
-    border-color: #EDAB94;
+}
+
+.selected-btn {
+    background: #EFEFEF;
 }
 
 .account-menu {
@@ -180,7 +194,7 @@ h3 {
     outline: none;
     background: none;
     color: white;
-    font-size: 20px;
+    font-size: 24px;
     border-width: 0px;
     font-family: 'Ubuntu', sans-serif;
     font-weight: 400;
