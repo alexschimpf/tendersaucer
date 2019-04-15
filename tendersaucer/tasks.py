@@ -94,7 +94,7 @@ def build_personalized_playlist(
         _set_failure_state(task=self, exception=e)
         raise Ignore()
 
-    message = 'Your playlist has been created.'
+    message = 'Your playlist has been created in your Spotify account.'
     if len(track_ids) < MAX_NUM_TRACKS:
         message += ' However, your criteria may be too limiting. ' \
                    'Try loosening your criteria for better results.'
@@ -146,7 +146,7 @@ def build_genre_playlist(
         _set_failure_state(task=self, exception=e)
         raise Ignore()
 
-    message = 'Your playlist has been created.'
+    message = 'Your playlist has been created in your Spotify account.'
     if len(track_ids) < MAX_NUM_TRACKS:
         message += ' However, your criteria may be too limiting. ' \
                    'Try loosening your criteria for better results.'

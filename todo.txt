@@ -3,7 +3,6 @@
     - Unless it has to be done to fill the playlist
 - Improve genre search
 - How to make range-filter more intuitive?
-- How to make it clear that the playlist will show up in your Spotify account?
 - Make info messages clearer?
 - React-Native
 - tendersaucer.com -> www.tendersaucer.com

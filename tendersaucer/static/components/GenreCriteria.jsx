@@ -2,6 +2,7 @@ import 'rc-slider/assets/index.css';
 import InfoIcon from './InfoIcon';
 import WindowedSelect from "react-windowed-select";
 import Slider, { createSliderWithTooltip } from 'rc-slider';
+import ReactTooltip from 'react-tooltip';
 
 const Range = createSliderWithTooltip(Slider.Range);
 const SliderWithTooltip = createSliderWithTooltip(Slider);
@@ -82,6 +83,7 @@ class GenreCriteria extends React.Component {
     render() {
         return (
             <div className="criteria-div">
+                <ReactTooltip effect="solid" className="tooltip"/>
                 <div style={{display: 'flex', alignItems: 'center'}}>
                     <h3 className="param-header">Artist Popularity</h3>
                     <Range className="slider" defaultValue={[0, 100]} min={0} max={100}
@@ -102,8 +104,9 @@ class GenreCriteria extends React.Component {
                     <h3 className="tempo-param-header">Track Tempo</h3>
                     <InfoIcon className="tempo-info-icon"
                         message="Tempo is measured in beats per minute.
-                                 A higher value means a faster-paced track." />
-                    <Range className="slider" defaultValue={[0, 250]} min={0} max={250}
+                                 A higher value means a faster-paced track.
+                                 The average track tempo is around 120 BPM." />
+                    <Range className="slider" defaultValue={[80, 160]} min={0} max={250}
                         handleStyle={{borderColor: 'salmon'}}
                         trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
                         railStyle={{backgroundColor: 'salmon'}} allowCross={false}

@@ -89,8 +89,9 @@ class FavoriteArtistsCriteria extends React.Component {
                     <h3 className="tempo-param-header">Track Tempo</h3>
                     <InfoIcon className="tempo-info-icon"
                         message="Tempo is measured in beats per minute.
-                                 A higher value means a faster-paced track." />
-                    <Range className="slider" defaultValue={[0, 250]} min={0} max={250}
+                                 A higher value means a faster-paced track.
+                                 The average track tempo is around 120 BPM." />
+                    <Range className="slider" defaultValue={[80, 160]} min={0} max={250}
                         handleStyle={{borderColor: 'salmon'}}
                         trackStyle={[{backgroundColor: 'salmon'},{backgroundColor: 'salmon'}]}
                         railStyle={{backgroundColor: 'salmon'}} allowCross={false}

@@ -26,7 +26,7 @@ class Main extends React.Component {
             playlistType: 'favorite_artists',
             artistPopularity: [0, 100],
             trackReleaseYear: [1900, currYear],
-            trackTempo: [0, 250],
+            trackTempo: [80, 160],
             trackDanceability: [0, 100],
             adventurousness: 0,
             artistTimeRanges: [],
