@@ -83,9 +83,22 @@ def build_personalized_playlist(
         raise Ignore()
 
     # Get filtered artists' tracks that meet criteria
-    track_ids = top_tracks.get_tracks(
+    tracks = top_tracks.get_tracks(
         artist_ids=seed_artist_ids, tempo_range=track_tempo_range,
         release_year_range=track_release_year_range, danceability_range=track_danceability_range)
+
+    tracks_by_artist = {}
+    for track in tracks:
+        try:
+            tracks_by_artist[track['artist_id']].append(track['id'])
+        except KeyError:
+            tracks_by_artist[track['artist_id']] = track['id']
+
+    # Pick one random song from each artist
+    track_ids = []
+    for _, artist_track_ids in tracks_by_artist.items():
+        track_ids.append(random.choice(artist_track_ids))
+
     track_ids = random.sample(track_ids, min(len(track_ids), MAX_NUM_TRACKS))
 
     try:
@@ -135,9 +148,22 @@ def build_genre_playlist(
         raise Ignore()
 
     # Fetch filtered artists' tracks that meet criteria
-    track_ids = top_tracks.get_tracks(
+    tracks = top_tracks.get_tracks(
         artist_ids=seed_artist_ids, tempo_range=track_tempo_range,
         release_year_range=track_release_year_range, danceability_range=track_danceability_range)
+
+    tracks_by_artist = {}
+    for track in tracks:
+        try:
+            tracks_by_artist[track['artist_id']].append(track['id'])
+        except KeyError:
+            tracks_by_artist[track['artist_id']] = track['id']
+
+    # Pick one random song from each artist
+    track_ids = []
+    for _, artist_track_ids in tracks_by_artist.items():
+        track_ids.append(random.choice(artist_track_ids))
+
     track_ids = random.sample(track_ids, min(len(track_ids), MAX_NUM_TRACKS))
 
     try:

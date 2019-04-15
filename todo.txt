@@ -1,8 +1,4 @@
 - Put artists in parent genres
-- Fix issue where the same artist is showing up multiple times on the playlist
-    - Unless it has to be done to fill the playlist
 - Improve genre search
-- How to make range-filter more intuitive?
-- Make info messages clearer?
 - React-Native
 - tendersaucer.com -> www.tendersaucer.com

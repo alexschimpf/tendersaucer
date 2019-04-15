@@ -5,14 +5,15 @@ from tendersaucer.db.tendersaucer import CONNECTION_POOL
 def get_tracks(artist_ids, tempo_range, release_year_range, danceability_range):
     query = '''
         SELECT
-            DISTINCT id
+            id,
+            artist_id
         FROM
             tendersaucer.top_tracks
         WHERE
             artist_id IN (%(artist_ids)s) AND
             tempo >= %(min_tempo)s AND
             tempo <= %(max_tempo)s AND
-            release_year >= %(min_release_year)s AND 
+            release_year >= %(min_release_year)s AND
             release_year <= %(max_release_year)s AND
             danceability >= %(min_danceability)s AND
             danceability <= %(max_danceability)s
@@ -27,13 +28,7 @@ def get_tracks(artist_ids, tempo_range, release_year_range, danceability_range):
         'max_danceability': danceability_range[1]
     }
     query, params = handle_list_params(query=query, params=params)
-    rows = fetch_all(pool=CONNECTION_POOL, query=query, params=params)
-    
-    track_ids = []
-    for row in rows:
-        track_ids.append(row['id'])
-        
-    return track_ids
+    return fetch_all(pool=CONNECTION_POOL, query=query, params=params)
 
 
 def get_artists_with_tracks(artist_ids):
@@ -74,7 +69,7 @@ def insert_or_update_tracks(artist_id, top_tracks, audio_features):
 
         statement = '''
             INSERT INTO
-                tendersaucer.top_tracks 
+                tendersaucer.top_tracks
                 (id, artist_id, release_year, tempo, danceability)
             VALUES
                 (%(id{index})s, %(artist_id)s, %(release_year{index})s, %(tempo{index})s, %(danceability{index})s)
