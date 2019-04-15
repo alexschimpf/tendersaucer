@@ -1,4 +1,3 @@
-- Put artists in parent genres
 - Improve genre search
 - React-Native
 - tendersaucer.com -> www.tendersaucer.com
