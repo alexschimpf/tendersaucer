@@ -81,6 +81,21 @@ def get_all_genres(skip_cache=False):
         return _GENRES
 
 
+def add_artist_genre_relationship(artist_id, genre_name):
+    graph = _get_graph()
+
+    query = '''
+        MATCH (a:Artist {id: $artist_id})
+        MATCH (g:Genre {name: $genre_name})
+        MERGE (a)-[:IN_GENRE]-(g)
+    '''
+    parameters = {
+        'artist_id': artist_id,
+        'genre_name': genre_name
+    }
+    graph.run(query, parameters)
+
+
 def index_artist(artist, related_artists, genres):
     graph = _get_graph()
 

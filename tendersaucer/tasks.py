@@ -92,7 +92,7 @@ def build_personalized_playlist(
         try:
             tracks_by_artist[track['artist_id']].append(track['id'])
         except KeyError:
-            tracks_by_artist[track['artist_id']] = track['id']
+            tracks_by_artist[track['artist_id']] = [track['id']]
 
     # Pick one random song from each artist
     track_ids = []
@@ -157,7 +157,7 @@ def build_genre_playlist(
         try:
             tracks_by_artist[track['artist_id']].append(track['id'])
         except KeyError:
-            tracks_by_artist[track['artist_id']] = track['id']
+            tracks_by_artist[track['artist_id']] = [track['id']]
 
     # Pick one random song from each artist
     track_ids = []
