@@ -1,3 +1,4 @@
 - Improve genre search
+- Fix app name on Spotify developer account
 - React-Native
 - tendersaucer.com -> www.tendersaucer.com
