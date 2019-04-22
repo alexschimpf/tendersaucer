@@ -55,7 +55,7 @@ h3 {
 
 .criteria-div {
     grid-area: main;
-    margin-left: 10%;
+    margin-left: 40px;
     padding-top: 30px;
 }
 
@@ -258,7 +258,7 @@ h3 {
 .pre-login-msg {
     margin: 0 auto;
     font-weight: 800;
-    font-size: 20px;
+    font-size: 24px;
 }
 
 .footer {
