@@ -26,8 +26,8 @@
         "uri": "http://0.0.0.0:7474"
     },
     "spotify": {
-        "client_id": "91995bc23fd24cd8b6dc67616443a3cf",
-        "client_secret": "39cce37e6dab4368a1189c569cbed573",
+        "client_id": null,
+        "client_secret": null,
         "redirect_url": "http://0.0.0.0:5000/spotify_callback"
     },
     "logging": {
