@@ -1,13 +1,13 @@
 h3 {
     font-family: 'Ubuntu', sans-serif;
-    font-weight: 100;
-    font-size: 16px;
+    font-weight: 800;
+    font-size: 18px;
 }
 
 .success-disclaimer {
     font-family: 'Ubuntu', sans-serif;
-    font-weight: 100;
-    font-size: 12px;
+    font-weight: 400;
+    font-size: 14px;
     margin: 16px;
 }
 
@@ -36,7 +36,8 @@ h3 {
 .tooltip {
     max-width: 200px;
     text-align: center;
-    font-weight: 100;
+    font-weight: 800;
+    font-size: 14px;
     font-family: 'Ubuntu', sans-serif;
 }
 
@@ -87,44 +88,44 @@ h3 {
     padding: 10px 20px 20px 10px;
     font-size: 50px;
     color: white;
-    font-weight: 400;
+    font-weight: 800;
 }
 
 .checkbox-label {
-    font-weight: 100;
+    font-weight: 800;
     font-family: 'Ubuntu', sans-serif;
 }
 
 .param-header {
-    min-width: 156px;
-    margin-right: 20px;
-    font-size: 16px;
+    min-width: 164px;
+    margin-right: 44px;
+    font-size: 18px;
 }
 
 .adventurousness-param-header {
-    min-width: 120px;
+    min-width: 153px;
     margin-right: 0px;
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .adventurousness-info-icon {
-    margin-right: 32px;
+    margin-right: 36px;
 }
 
 .tempo-param-header {
-    min-width: 92px;
+    min-width: 110px;
     margin-right: 0px;
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .tempo-info-icon {
-    margin-right: 64px;
+    margin-right: 77px;
 }
 
 .artist-time-ranges-param-header {
     min-width: 136px;
     margin-right: 0px;
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .artist-time-ranges-info-icon {
@@ -139,12 +140,12 @@ h3 {
     background-color: white;
     color: black;
     padding: 14px 28px;
-    font-size: 12px;
+    font-size: 14px;
     cursor: pointer;
     border-color: salmon;
     border-width: 1px;
     border-radius: 5px;
-    font-weight: 100;
+    font-weight: 800;
     font-family: 'Ubuntu', sans-serif;
 }
 
@@ -173,7 +174,7 @@ h3 {
     font-size: 16px;
     cursor: pointer;
     border-width: 0px;
-    font-weight: 100;
+    font-weight: 800;
     font-family: 'Ubuntu', sans-serif;
     width: 100%;
     outline: none;
@@ -197,10 +198,10 @@ h3 {
     font-size: 24px;
     border-width: 0px;
     font-family: 'Ubuntu', sans-serif;
-    font-weight: 400;
+    font-weight: 800;
     display: inline-block;
     height: 100%;
-    width: 160px;
+    width: 165px;
     min-width: 140px;
 }
 
@@ -218,12 +219,12 @@ h3 {
 }
 
 .artist-time-range-first-btn {
-    font-size: 12px;
+    font-size: 14px;
     margin-top: 10px;
 }
 
 .artist-time-range-btn {
-    font-size: 12px;
+    font-size: 14px;
     margin-left: 10px;
     margin-top: 10px;
 }
@@ -234,11 +235,11 @@ h3 {
     height: 40;
     text-align: center;
     border-style: solid;
-    font-size: 12px;
+    font-size: 16px;
     border-width: 1px;
     border-radius: 5px;
     border-color: salmon;
-    font-weight: 100;
+    font-weight: 400;
     font-family: 'Ubuntu', sans-serif;
     outline: none;
 }
@@ -256,7 +257,7 @@ h3 {
 
 .pre-login-msg {
     margin: 0 auto;
-    font-weight: 100;
+    font-weight: 800;
     font-size: 20px;
 }
 
@@ -271,7 +272,7 @@ h3 {
     padding-bottom: 10px;
     background: linear-gradient(to right, darksalmon, salmon);
     color: white;
-    font-weight: 100;
+    font-weight: 800;
     font-family: 'Ubuntu', sans-serif;
     position: fixed;
     bottom: 0;
@@ -279,7 +280,7 @@ h3 {
 
 div.slider {
     min-width: 230px;
-    max-width: 379px;
+    max-width: 415px;
     display: inline-block;
 }
 

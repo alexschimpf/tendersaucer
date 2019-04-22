@@ -111,7 +111,7 @@ class FavoriteArtistsCriteria extends React.Component {
                         message="This scale represents how much you want your playlist to
                                  deviate from your favorite artists. 0 means you only want to
                                  listen to artists you know. 3 means you're willing to listen
-                                 to artists who are a lot different than your favorite artists." />
+                                 to artists who are quite different than your favorite artists." />
                     <SliderWithTooltip className="slider" defaultValue={0} min={0} max={3}
                         handleStyle={{borderColor: 'salmon'}}
                         trackStyle={{backgroundColor: 'salmon'}}

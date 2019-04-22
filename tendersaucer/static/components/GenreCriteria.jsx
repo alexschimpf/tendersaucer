@@ -11,14 +11,14 @@ const SELECT_STYLES = {
     container: (styles, state) => ({
         ...styles,
         display: 'inline-block',
-        width: '380px',
+        width: '415px',
         minWidth: '230px',
         marginTop: '10px',
         borderColor: 'salmon',
         float: 'left',
         fontFamily: '\'Ubuntu\', sans-serif',
-        fontWeight: '400',
-        fontSize: '12px'
+        fontWeight: '800',
+        fontSize: '14px'
     }),
     menu: (styles, state) => ({
         ...styles,
