@@ -165,7 +165,7 @@ class Main extends React.Component {
                 <div>
                     <h3>{message}</h3>
                     <div className="success-disclaimer">
-                        (There may be a slight delay before your playlist shows up in your Spotify account.)
+                        There may be a slight delay before your playlist shows up in your Spotify account.
                     </div>
                 </div>
             )
