@@ -36,7 +36,7 @@ class Main extends React.Component {
         };
 
         this.onFormChanged = this.onFormChanged.bind(this);
-        this.onBuildPlaylist = this.onBuildPlaylist.bind(this);
+        this.buildPlaylist = this.buildPlaylist.bind(this);
         this.showBasicPopup = this.showBasicPopup.bind(this);
         this.checkRequiredFields = this.checkRequiredFields.bind(this);
         this.setProgressInterval = this.setProgressInterval.bind(this);
@@ -57,7 +57,7 @@ class Main extends React.Component {
         });
     }
 
-    onBuildPlaylist() {
+    buildPlaylist() {
         let errorMessage = this.checkRequiredFields();
         if (errorMessage) {
             this.showBasicPopup('Whoa there!', errorMessage);
@@ -177,18 +177,22 @@ class Main extends React.Component {
             <div>
                 <Popup closeOnOutsideClick={false} closeBtn={!this.state.isLoading} />
                 <div className="main-grid">
-                    <TopBar onBuildPlaylist={this.onBuildPlaylist} onLoadingChanged={this.onLoadingChanged} />
+                    <TopBar onLoadingChanged={this.onLoadingChanged} />
                     {
                         IS_LOGGED_IN &&
                             <SideBar onFormChanged={this.onFormChanged} />
                     }
                     {
                         IS_LOGGED_IN ?
-                            (
+                            <div>
+                            {
                                 this.state.playlistType == 'genre' ?
                                     <GenreCriteria genres={GENRE_OPTIONS} onFormChanged={this.onFormChanged} /> :
                                     <FavoriteArtistsCriteria onFormChanged={this.onFormChanged} />
-                            ) :
+                            }
+                                <button className="btn default build-playlist-btn"
+                                    onClick={this.buildPlaylist}>Build Playlist</button>
+                            </div> :
                             <div className="pre-login-msg-div">
                                 <h3 className="pre-login-msg">
                                     Tendersaucer lets you generate custom Spotify playlists
@@ -196,7 +200,7 @@ class Main extends React.Component {
                                     tempo, etc.
                                 </h3><br></br>
                                 <h3 className="pre-login-msg">
-                                    Please log in to your Spotify account to continue.
+                                    <span>Please <a href="/get_spotify_auth">log in</a> to your Spotify account to continue.</span>
                                 </h3>
                             </div>
                     }

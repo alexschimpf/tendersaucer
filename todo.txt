@@ -1,3 +1,6 @@
+- Improve favorite artists modal
+    - Allow user to select time range
+    - Add pagination so user can see all
 - Improve genre search
 - Fix app name on Spotify developer account
 - React-Native

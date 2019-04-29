@@ -114,12 +114,8 @@ class TopBar extends React.Component {
                 <h3 className="top-bar-title">Tendersaucer</h3>
                 {
                     IS_LOGGED_IN &&
-                        <button className="top-bar-btn build-playlist-btn" onClick={this.props.onBuildPlaylist}>Build Playlist</button>
-                }
-                {
-                    IS_LOGGED_IN &&
                         <Menu
-                            trigger={<img src="static/images/caret-down.png" className="top-bar-btn"></img>}
+                            trigger={<img src="static/images/caret-down.png" className="top-bar-btn account-menu-top-bar-btn"></img>}
                             position="bottom center" on="click" mouseLeaveDelay={300} mouseEnterDelay={0}
                             contentStyle={{ padding: '0px', border: 'none', width: '160px' }} arrow={false} closeOnDocumentClick>
                             <div className="account-menu">

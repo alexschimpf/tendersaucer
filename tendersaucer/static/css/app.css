@@ -163,6 +163,10 @@ h3 {
     background: #EFEFEF;
 }
 
+.account-menu-top-bar-btn {
+    margin-left: auto;
+}
+
 .account-menu {
     text-align: center;
 }
@@ -211,7 +215,17 @@ h3 {
 }
 
 .build-playlist-btn {
-    margin-left: auto;
+    margin-left: 230px;
+    margin-top: 50px;
+    margin-bottom: 100px;
+    font-size: 28px;
+    color: white;
+    background: salmon;
+}
+
+.build-playlist-btn:hover {
+    color: white;
+    background: lightsalmon;
 }
 
 .login-btn {
