@@ -100,7 +100,7 @@ def get_task_status(task_id):
 def get_user_top_genres():
     spotify_access_token = session['spotify_access_token']
     spotify_client = Spotify(auth=spotify_access_token)
-    user_top_genres = spotify_client.get_user_top_genres(limit=10)
+    user_top_genres = spotify_client.get_user_top_genres(limit=30)
 
     return jsonify(top_genres=user_top_genres)
 
@@ -109,9 +109,14 @@ def get_user_top_genres():
 @spotfiy_auth_required
 @catch_errors
 def get_user_top_artists():
+    time_range = request.args.get('time_range')
+    if time_range not in ('short', 'medium', 'long'):
+        raise TendersaucerException('time_range must be one of: short, medium, long')
+    time_range += '_term'
+
     spotify_access_token = session['spotify_access_token']
     spotify_client = Spotify(auth=spotify_access_token)
-    user_top_artists = spotify_client.get_user_top_artists(time_ranges=('medium_term',), limit=10)
+    user_top_artists = spotify_client.get_user_top_artists(time_ranges=(time_range,), limit=50)
     user_top_artists = [artist['name'] for artist in user_top_artists]
 
     return jsonify(top_artists=user_top_artists)

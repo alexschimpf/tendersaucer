@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {default as Menu} from 'reactjs-popup';
+import FavoriteArtistsPopup from './FavoriteArtistsPopup';
 import Loader from 'react-loader-spinner';
 import Popup from 'react-popup';
 
@@ -34,36 +35,12 @@ class TopBar extends React.Component {
     }
 
     showFavoriteArtists() {
-        this.showLoadingPopup();
-        this.props.onLoadingChanged(true);
-        axios.get('/user_top_artists').then(response => {
-            let artists = response.data.top_artists;
-            if (!artists || !artists.length) {
-                artists = ['Sorry, we couldn\'t determine your favorite artists.']
-            }
-            artists = artists.map(artist =>
-                <h3 key={artist}>{artist}</h3>
-            );
-
-            Popup.close();
-            Popup.create({
-                title: 'Your Favorite Artists',
-                content: (
-                    <div>
-                        {artists}
-                    </div>
-                )
-            });
-        }).catch(error => {
-            Popup.close();
-            Popup.create({
-                title: 'Oops!',
-                content: (
-                    <h3>There was an error getting your favorite artists. Please try again.</h3>
-                )
-            });
-        }).finally(() => {
-            this.props.onLoadingChanged(false);
+        Popup.close();
+        Popup.create({
+            title: 'Your Favorite Artists',
+            content: (
+                <FavoriteArtistsPopup />
+            )
         });
     }
 
