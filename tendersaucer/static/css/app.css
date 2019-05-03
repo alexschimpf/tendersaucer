@@ -156,7 +156,7 @@ h3 {
 }
 
 .default:hover {
-    text-decoration: underline;
+    background: #EFEFEF;
 }
 
 .favorite-artists-popup-btn {
