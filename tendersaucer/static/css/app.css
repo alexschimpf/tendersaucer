@@ -156,26 +156,28 @@ h3 {
 }
 
 .default:hover {
-    background: #EFEFEF;
+    text-decoration: underline;
 }
 
 .favorite-artists-popup-btn {
     background-color: white;
-    color: black;
+    color: salmon;
     padding: 5px 5px;
     margin-left: 5px;
     font-size: 14px;
     cursor: pointer;
-    border-color: salmon;
-    border-width: 1px;
-    border-radius: 5px;
+    border-width: 0px;
     font-weight: 800;
     font-family: 'Ubuntu', sans-serif;
     outline: none;
 }
 
 .favorite-artists-popup-btn:hover {
-    background: #EFEFEF;
+    text-decoration: underline;
+}
+
+.popup-selected-time-period {
+    text-decoration: underline;
 }
 
 .selected-btn {
@@ -247,10 +249,16 @@ h3 {
     background: lightsalmon;
 }
 
-.favorite-artists-popup-div {
+.favorite-artists-popup-time-ranges-div {
     text-align: center;
+}
+
+.favorite-artists-popup-artists-div {
+    text-align: center;
+    min-height: 400px;
     max-height: 400px;
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .login-btn {

@@ -19,7 +19,7 @@
 
     .mm-popup__close {
         position: absolute;
-        top: 12px;
+        top: 16px;
         right: 20px;
         padding: 0;
         width: 20px;
@@ -86,7 +86,7 @@
     }
 
     .mm-popup__box {
-        width: 350px;
+        width: 400px;
         position: fixed;
         top: 10%;
         left: 50%;

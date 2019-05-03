@@ -57,19 +57,21 @@ class FavoriteArtistsPopup extends React.Component {
 
     render() {
         return (
-            <div className="favorite-artists-popup-div">
-                <div>
-                    <button className={'favorite-artists-popup-btn ' +
-                                       (this.state.timeRange === 'short' ? 'selected-btn' : '')}
-                                       onClick={() => this.onTimeRangeSelected('short')}>Short Term</button>
-                    <button className={'favorite-artists-popup-btn ' +
-                                       (this.state.timeRange === 'medium' ? 'selected-btn' : '')}
-                                       onClick={() => this.onTimeRangeSelected('medium')}>Medium Term</button>
-                    <button className={'favorite-artists-popup-btn ' +
-                                       (this.state.timeRange === 'long' ? 'selected-btn' : '')}
-                                       onClick={() => this.onTimeRangeSelected('long')}>Long Term</button>
+            <div>
+                <div className="favorite-artists-popup-time-ranges-div">
+                    <div>
+                        <button className={'favorite-artists-popup-btn ' +
+                                           (this.state.timeRange === 'short' ? 'popup-selected-time-period ' : '')}
+                                           onClick={() => this.onTimeRangeSelected('short')}>Short Term</button>
+                        <button className={'favorite-artists-popup-btn ' +
+                                           (this.state.timeRange === 'medium' ? 'popup-selected-time-period ' : '')}
+                                           onClick={() => this.onTimeRangeSelected('medium')}>Medium Term</button>
+                        <button className={'favorite-artists-popup-btn ' +
+                                           (this.state.timeRange === 'long' ? 'popup-selected-time-period ' : '')}
+                                           onClick={() => this.onTimeRangeSelected('long')}>Long Term</button>
+                    </div>
                 </div>
-                <div>
+                <div className="favorite-artists-popup-artists-div">
                 {
                     this.state.isLoading ?
                         <div>
