@@ -197,7 +197,7 @@ class Main extends React.Component {
                             </div>
                     }
                     <div className="footer">
-                        <p>&copy; 2019 Alex Schimpf</p>
+                        <p>&copy; {(new Date()).getFullYear()} Alex Schimpf</p>
                     </div>
                 </div>
             </div>
