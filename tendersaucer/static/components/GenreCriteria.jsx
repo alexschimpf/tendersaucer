@@ -4,6 +4,8 @@ import InfoIcon from './InfoIcon';
 import AsyncSelect from 'react-select/lib/Async';
 import Slider, { createSliderWithTooltip } from 'rc-slider';
 import ReactTooltip from 'react-tooltip';
+import Loader from 'react-loader-spinner';
+import Popup from 'react-popup';
 
 const Range = createSliderWithTooltip(Slider.Range);
 const SliderWithTooltip = createSliderWithTooltip(Slider);
@@ -53,12 +55,18 @@ class GenreCriteria extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            selectedGenres: []
+        };
+
         this.onArtistPopularityChanged = this.onArtistPopularityChanged.bind(this);
         this.onTrackReleaseYearChanged = this.onTrackReleaseYearChanged.bind(this);
         this.onTrackTempoChanged = this.onTrackTempoChanged.bind(this);
         this.onTrackDanceabilityChanged = this.onTrackDanceabilityChanged.bind(this);
         this.onGenresChanged = this.onGenresChanged.bind(this);
         this.searchGenres = this.searchGenres.bind(this);
+        this.addFavoriteGenres = this.addFavoriteGenres.bind(this);
+        this.showLoadingPopup = this.showLoadingPopup.bind(this);
     }
 
     onArtistPopularityChanged(rangeValues) {
@@ -78,13 +86,14 @@ class GenreCriteria extends React.Component {
     }
 
     onGenresChanged(genres) {
-        let selectedGenres = genres.map((genre) => genre.value);
+        this.setState({selectedGenres: genres});
+
+        let selectedGenres = genres.map(genre => genre.value);
         this.props.onFormChanged('genres', selectedGenres);
     }
 
     searchGenres(query, callback) {
-        axios.get('/search/genres?query=' + query)
-        .then(response => {
+        axios.get('/search/genres?query=' + query).then(response => {
             let options = response.data.genres.map(genre => {
                 return {
                     label: genre.charAt(0).toUpperCase() + genre.slice(1),
@@ -94,6 +103,46 @@ class GenreCriteria extends React.Component {
             callback(options);
         }).catch(error => {
             callback([]);
+        });
+    }
+
+    addFavoriteGenres() {
+        this.showLoadingPopup();
+
+        let selectedGenres = this.state.selectedGenres.slice();
+        axios.get('/user_top_genres').then(response => {
+            let genres = response.data.top_genres;
+            genres = genres.map(genre => {
+                return {
+                    label: genre.charAt(0).toUpperCase() + genre.slice(1),
+                    value: genre
+                }
+            });
+            genres.forEach(genre => {
+                for (let selectedGenre of selectedGenres) {
+                    if (selectedGenre.value === genre.value) {
+                        return;
+                    }
+                }
+                selectedGenres.push(genre);
+            });
+            this.onGenresChanged(selectedGenres);
+        }).finally(() => {
+            Popup.close();
+        });
+    }
+
+    showLoadingPopup() {
+        Popup.create({
+            title: 'Loading',
+            content: (
+                <div className="loader-div">
+                    <h3>Hang tight. This could take a minute.</h3>
+                    <div>
+                        <Loader type="Oval" color="orange" height="50" width="50" />
+                    </div>
+                </div>
+            )
         });
     }
 
@@ -142,7 +191,9 @@ class GenreCriteria extends React.Component {
                     <AsyncSelect classNamePrefix="react-select" styles={SELECT_STYLES}
                         loadOptions={this.searchGenres} isMulti="true" placeholder="Enter genre name"
                         menuPlacement="bottom"
-                        onChange={this.onGenresChanged} />
+                        onChange={this.onGenresChanged} value={this.state.selectedGenres} />
+                    <button className="btn default genre-add-favorites-btn"
+                        onClick={this.addFavoriteGenres}>Add Favorites</button>
                 </div>
             </div>
         )

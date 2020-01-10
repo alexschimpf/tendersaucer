@@ -216,6 +216,14 @@ h3 {
     outline: none;
 }
 
+.genre-add-favorites-btn {
+    font-size: 12px;
+    padding: 5px;
+    margin-left: 10px;
+    margin-top: 10px;
+    max-width: 75px;
+}
+
 .top-bar-btn {
     outline: none;
     background: none;
