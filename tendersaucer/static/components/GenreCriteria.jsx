@@ -87,7 +87,7 @@ class GenreCriteria extends React.Component {
         .then(response => {
             let options = response.data.genres.map(genre => {
                 return {
-                    label: genre,
+                    label: genre.charAt(0).toUpperCase() + genre.slice(1),
                     value: genre
                 };
             });
