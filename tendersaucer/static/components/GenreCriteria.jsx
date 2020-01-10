@@ -1,6 +1,7 @@
 import 'rc-slider/assets/index.css';
+import axios from 'axios';
 import InfoIcon from './InfoIcon';
-import WindowedSelect from "react-windowed-select";
+import AsyncSelect from 'react-select/lib/Async';
 import Slider, { createSliderWithTooltip } from 'rc-slider';
 import ReactTooltip from 'react-tooltip';
 
@@ -57,6 +58,7 @@ class GenreCriteria extends React.Component {
         this.onTrackTempoChanged = this.onTrackTempoChanged.bind(this);
         this.onTrackDanceabilityChanged = this.onTrackDanceabilityChanged.bind(this);
         this.onGenresChanged = this.onGenresChanged.bind(this);
+        this.searchGenres = this.searchGenres.bind(this);
     }
 
     onArtistPopularityChanged(rangeValues) {
@@ -78,6 +80,21 @@ class GenreCriteria extends React.Component {
     onGenresChanged(genres) {
         let selectedGenres = genres.map((genre) => genre.value);
         this.props.onFormChanged('genres', selectedGenres);
+    }
+
+    searchGenres(query, callback) {
+        axios.get('/search/genres?query=' + query)
+        .then(response => {
+            let options = response.data.genres.map(genre => {
+                return {
+                    label: genre,
+                    value: genre
+                };
+            });
+            callback(options);
+        }).catch(error => {
+            callback([]);
+        });
     }
 
     render() {
@@ -122,8 +139,8 @@ class GenreCriteria extends React.Component {
                 </div>
                 <div className="criteria-row">
                     <h3 className="param-header">Genres</h3>
-                    <WindowedSelect classNamePrefix="react-select" styles={SELECT_STYLES}
-                        options={this.props.genres} isMulti="true" placeholder="Enter genre name"
+                    <AsyncSelect classNamePrefix="react-select" styles={SELECT_STYLES}
+                        loadOptions={this.searchGenres} isMulti="true" placeholder="Enter genre name"
                         menuPlacement="bottom"
                         onChange={this.onGenresChanged} />
                 </div>

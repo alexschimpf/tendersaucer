@@ -13,6 +13,8 @@ from tendersaucer.tasks import app as celery_app, build_genre_playlist, build_pe
 from tendersaucer.utils import catch_errors, spotfiy_auth_required, delimited_list, boolean, TendersaucerException
 
 
+DEFAULT_NUM_SEARCH_RESULTS = 100
+
 app = Flask(__name__, template_folder='static')
 app.secret_key = os.urandom(24)
 app.config.update({
@@ -28,9 +30,62 @@ Session(app)
 @app.route('/', methods=['GET'])
 @catch_errors
 def index():
-    genres = neo4j_client.get_all_genres()
     is_logged_in = 'true' if session.get('spotify_access_token') else 'false'
-    return render_template('_index.html', genres=json.dumps(genres), is_logged_in=is_logged_in)
+    return render_template('_index.html', is_logged_in=is_logged_in)
+
+
+@app.route('/search/genres', methods=['GET'])
+@catch_errors
+def search_genres():
+    query = (request.args.get('query') or '').strip().lower()
+
+    results = []
+    if query:
+        genres = neo4j_client.get_all_genres()
+        matching_genres = list(filter(lambda genre: query in genre.lower(), genres))
+
+        exact_matches = []
+        prefix_matches = []
+        substring_matches = []
+        for genre in matching_genres:
+            if genre == query:
+                exact_matches.append(genre)
+            elif genre.startswith(query):
+                prefix_matches.append(genre)
+            elif query in genre:
+                substring_matches.append(genre)
+
+        results = exact_matches + prefix_matches + substring_matches
+        results = results[:DEFAULT_NUM_SEARCH_RESULTS]
+
+    return jsonify(genres=results)
+
+
+@app.route('/search/artists', methods=['GET'])
+@catch_errors
+def search_artists():
+    query = (request.args.get('query') or '').strip().lower()
+
+    results = []
+    if query:
+        genres = neo4j_client.get_all_genres()
+        matching_genres = list(filter(lambda genre: query in genre.lower(), genres))
+
+        exact_matches = []
+        prefix_matches = []
+        substring_matches = []
+        for genre in matching_genres:
+            if genre == query:
+                exact_matches.append(genre)
+            elif genre.startswith(query):
+                prefix_matches.append(genre)
+            elif query in genre:
+                substring_matches.append(genre)
+
+        results = exact_matches + prefix_matches + substring_matches
+        results = results[:100]
+
+    return jsonify(genres=results)
 
 
 @app.route('/build_playlist', methods=['GET'])

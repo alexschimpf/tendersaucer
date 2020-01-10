@@ -8,14 +8,6 @@ import Loader from 'react-loader-spinner';
 import Popup from 'react-popup';
 
 
-const GENRE_OPTIONS = [];
-for (let genre of GENRES) {
-    GENRE_OPTIONS.push({
-        label: genre.charAt(0).toUpperCase() + genre.slice(1),
-        value: genre
-    });
-}
-
 class Main extends React.Component {
 
     constructor(props) {
@@ -187,7 +179,7 @@ class Main extends React.Component {
                             <div>
                             {
                                 this.state.playlistType == 'genre' ?
-                                    <GenreCriteria genres={GENRE_OPTIONS} onFormChanged={this.onFormChanged} /> :
+                                    <GenreCriteria onFormChanged={this.onFormChanged} /> :
                                     <FavoriteArtistsCriteria onFormChanged={this.onFormChanged} />
                             }
                                 <button className="btn default build-playlist-btn"
