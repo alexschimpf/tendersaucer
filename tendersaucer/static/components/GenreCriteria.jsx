@@ -7,6 +7,7 @@ import ReactTooltip from 'react-tooltip';
 import Loader from 'react-loader-spinner';
 import Popup from 'react-popup';
 
+
 const Range = createSliderWithTooltip(Slider.Range);
 const SliderWithTooltip = createSliderWithTooltip(Slider);
 

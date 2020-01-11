@@ -1,29 +1,75 @@
 import 'rc-slider/assets/index.css';
+import axios from 'axios';
 import InfoIcon from './InfoIcon';
+import AsyncSelect from 'react-select/lib/Async';
 import Slider, { createSliderWithTooltip } from 'rc-slider';
 import ReactTooltip from 'react-tooltip';
+import Loader from 'react-loader-spinner';
+import Popup from 'react-popup';
 
 
 const Range = createSliderWithTooltip(Slider.Range);
 const SliderWithTooltip = createSliderWithTooltip(Slider);
 
+const SELECT_STYLES = {
+    container: (styles, state) => ({
+        ...styles,
+        display: 'inline-block',
+        width: '415px',
+        minWidth: '230px',
+        marginTop: '10px',
+        borderColor: 'salmon',
+        float: 'left',
+        fontFamily: '\'Ubuntu\', sans-serif',
+        fontWeight: '800',
+        fontSize: '14px'
+    }),
+    menu: (styles, state) => ({
+        ...styles,
+        width: '400px'
+    }),
+    option: (styles, state) => ({
+        ...styles,
+        backgroundColor: 'white'
+    }),
+    control: (styles, state) => ({
+        ...styles,
+        borderColor: 'salmon',
+        boxShadow: 'none'
+    }),
+    dropdownIndicator: (styles, state) => ({
+        ...styles,
+        color: 'salmon'
+    }),
+    indicatorSeparator: (styles, state) => ({
+        ...styles,
+        backgroundColor: 'salmon'
+    }),
+    clearIndicator: (styles, state) => ({
+        ...styles,
+        color: 'salmon'
+    })
+};
 
-class FavoriteArtistsCriteria extends React.Component {
+class ArtistsCriteria extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            artistTimeRanges: []
+            selectedArtists: []
         };
 
-        this.addOrRemoveArtistTimeRange = this.addOrRemoveArtistTimeRange.bind(this);
         this.onArtistPopularityChanged = this.onArtistPopularityChanged.bind(this);
         this.onTrackReleaseYearChanged = this.onTrackReleaseYearChanged.bind(this);
         this.onTrackTempoChanged = this.onTrackTempoChanged.bind(this);
         this.onTrackDanceabilityChanged = this.onTrackDanceabilityChanged.bind(this);
         this.onAdventurousnessChanged = this.onAdventurousnessChanged.bind(this);
         this.isTimeRangeSelected = this.isTimeRangeSelected.bind(this);
+        this.searchArtists = this.searchArtists.bind(this);
+        this.onArtistsChanged = this.onArtistsChanged.bind(this);
+        this.addFavoriteArtists = this.addFavoriteArtists.bind(this);
+        this.showLoadingPopup = this.showLoadingPopup.bind(this);
     }
 
     onArtistPopularityChanged(rangeValues) {
@@ -46,23 +92,69 @@ class FavoriteArtistsCriteria extends React.Component {
         this.props.onFormChanged('adventurousness', value);
     }
 
-    addOrRemoveArtistTimeRange(timeRange) {
-        let newArtistTimeRanges = this.state.artistTimeRanges.slice();
-        let timeRangeIndex = newArtistTimeRanges.indexOf(timeRange);
-        if (timeRangeIndex > -1) {
-            newArtistTimeRanges.splice(timeRangeIndex, 1);
-        } else {
-            newArtistTimeRanges.push(timeRange);
-        }
-        this.setState({
-            artistTimeRanges: newArtistTimeRanges
-        })
-
-        this.props.onFormChanged('artistTimeRanges', newArtistTimeRanges);
-    }
-
     isTimeRangeSelected(timeRange) {
         return this.state.artistTimeRanges.includes(timeRange);
+    }
+
+    onArtistsChanged(artists) {
+        this.setState({selectedArtists: artists});
+
+        let selectedArtists = artists.map(artist => artist.value);
+        this.props.onFormChanged('artists', selectedArtists);
+    }
+
+    searchArtists(query, callback) {
+        axios.get('/search/artists?query=' + query).then(response => {
+            let options = response.data.artists.map(artist => {
+                return {
+                    label: artist.name,
+                    value: artist.id
+                };
+            });
+            callback(options);
+        }).catch(error => {
+            callback([]);
+        });
+    }
+
+    addFavoriteArtists() {
+        this.showLoadingPopup();
+
+        let selectedArtists = this.state.selectedArtists.slice();
+        axios.get('/user_top_artists?time_range=medium').then(response => {
+            let artists = response.data.top_artists;
+            artists = artists.map(artist => {
+                return {
+                    label: artist.name,
+                    value: artist.id,
+                }
+            });
+            artists.forEach(artist => {
+                for (let selectedArtist of selectedArtists) {
+                    if (selectedArtist.value === artist.value) {
+                        return;
+                    }
+                }
+                selectedArtists.push(artist);
+            });
+            this.onArtistsChanged(selectedArtists);
+        }).finally(() => {
+            Popup.close();
+        });
+    }
+
+    showLoadingPopup() {
+        Popup.create({
+            title: 'Loading',
+            content: (
+                <div className="loader-div">
+                    <h3>Hang tight. This could take a minute.</h3>
+                    <div>
+                        <Loader type="Oval" color="orange" height="50" width="50" />
+                    </div>
+                </div>
+            )
+        });
     }
 
     render() {
@@ -119,28 +211,17 @@ class FavoriteArtistsCriteria extends React.Component {
                         onChange={this.onAdventurousnessChanged} />
                 </div>
                 <div className="criteria-row">
-                    <h3 className="artist-time-ranges-param-header">Artist Time Ranges</h3>
-                    <InfoIcon className="artist-time-ranges-info-icon"
-                        message="This is used to help identify your favorite artists -
-                                 whether or not to consider artists you've listened
-                                 to in the short term, medium term, and/or long term.
-                                 Multiple may be selected." />
-                    <button
-                        className={"btn default artist-time-range-first-btn " +
-                                    (this.isTimeRangeSelected('short_term') ? 'selected-btn' : '')}
-                        onClick={() => this.addOrRemoveArtistTimeRange('short_term')}>Short Term</button>
-                    <button
-                        className={"btn default artist-time-range-btn " +
-                                    (this.isTimeRangeSelected('medium_term') ? 'selected-btn' : '')}
-                        onClick={() => this.addOrRemoveArtistTimeRange('medium_term')}>Medium Term</button>
-                    <button
-                        className={"btn default artist-time-range-btn " +
-                                    (this.isTimeRangeSelected('long_term') ? 'selected-btn' : '')}
-                        onClick={() => this.addOrRemoveArtistTimeRange('long_term')}>Long Term</button>
+                    <h3 className="param-header">Artists</h3>
+                    <AsyncSelect classNamePrefix="react-select" styles={SELECT_STYLES}
+                        loadOptions={this.searchArtists} isMulti="true" placeholder="Enter artist name"
+                        menuPlacement="bottom"
+                        onChange={this.onArtistsChanged} value={this.state.selectedArtists} />
+                    <button className="btn default genre-add-favorites-btn"
+                        onClick={this.addFavoriteArtists}>Add Favorites</button>
                 </div>
             </div>
         )
     }
 }
 
-export default FavoriteArtistsCriteria;
+export default ArtistsCriteria;

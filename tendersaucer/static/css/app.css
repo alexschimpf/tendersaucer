@@ -122,20 +122,6 @@ h3 {
     margin-right: 77px;
 }
 
-.artist-time-ranges-param-header {
-    min-width: 164px;
-    margin-right: 0px;
-    font-size: 18px;
-}
-
-.artist-time-ranges-info-icon {
-    margin-right: 20px;
-}
-
-.artist-time-ranges-label {
-    margin-top: 20px;
-}
-
 .btn {
     background-color: white;
     color: black;
@@ -271,11 +257,6 @@ h3 {
 
 .login-btn {
     margin-left: auto;
-}
-
-.artist-time-range-first-btn {
-    font-size: 14px;
-    margin-top: 10px;
 }
 
 .artist-time-range-btn {

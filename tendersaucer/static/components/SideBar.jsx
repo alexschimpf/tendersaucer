@@ -6,7 +6,7 @@ class SideBar extends React.Component {
         super(props);
 
         this.state = {
-            playlistType: 'favorite_artists'
+            playlistType: 'artist'
         };
 
         this.onPlaylistTypeChanged = this.onPlaylistTypeChanged.bind(this);
@@ -34,9 +34,9 @@ class SideBar extends React.Component {
                 <h3>Playlist Type</h3>
                 <button
                     className={"btn default genre-playlist-type-btn " +
-                                (this.state.playlistType === 'favorite_artists' ? 'selected-btn' : '')}
-                    onClick={() => this.onPlaylistTypeChanged('favorite_artists')}
-                    data-tip="Build a playlist based on artists you listen to the most">Favorite Artists</button>
+                                (this.state.playlistType === 'artist' ? 'selected-btn' : '')}
+                    onClick={() => this.onPlaylistTypeChanged('artist')}
+                    data-tip="Build a playlist based on one or more artists">Artists</button>
                 <br></br>
                 <button
                     className={"btn default " +

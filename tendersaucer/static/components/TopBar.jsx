@@ -1,8 +1,5 @@
 import axios from 'axios';
 import {default as Menu} from 'reactjs-popup';
-import FavoriteArtistsPopup from './FavoriteArtistsPopup';
-import Loader from 'react-loader-spinner';
-import Popup from 'react-popup';
 
 
 class TopBar extends React.Component {
@@ -10,72 +7,7 @@ class TopBar extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            isLoading: false
-        };
-
         this.logout = this.logout.bind(this);
-        this.showLoadingPopup = this.showLoadingPopup.bind(this);
-        this.showFavoriteArtists = this.showFavoriteArtists.bind(this);
-        this.showFavoriteGenres = this.showFavoriteGenres.bind(this);
-    }
-
-    showLoadingPopup() {
-        Popup.create({
-            title: 'Loading',
-            content: (
-                <div className="loader-div">
-                    <h3>Hang tight. This could take a minute.</h3>
-                    <div>
-                        <Loader type="Oval" color="orange" height="50" width="50" />
-                    </div>
-                </div>
-            )
-        });
-    }
-
-    showFavoriteArtists() {
-        Popup.close();
-        Popup.create({
-            title: 'Your Favorite Artists',
-            content: (
-                <FavoriteArtistsPopup />
-            )
-        });
-    }
-
-    showFavoriteGenres() {
-        this.showLoadingPopup();
-        this.props.onLoadingChanged(true);
-        axios.get('/user_top_genres').then(response => {
-            let genres = response.data.top_genres
-            if (!genres || !genres.length) {
-                genres = ['Sorry, we couldn\'t determine you favorite genres.']
-            }
-            genres = genres.map(genre =>
-                <h3 key={genre}>{genre.charAt(0).toUpperCase() + genre.slice(1)}</h3>
-            );
-
-            Popup.close();
-            Popup.create({
-                title: 'Your Favorite Genres',
-                content: (
-                    <div>
-                        {genres}
-                    </div>
-                )
-            });
-        }).catch(error => {
-            Popup.close();
-            Popup.create({
-                title: 'Oops!',
-                content: (
-                    <h3>There was an error getting your favorite genres. Please try again.</h3>
-                )
-            });
-        }).finally(() => {
-            this.props.onLoadingChanged(false);
-        });
     }
 
     logout() {
@@ -96,8 +28,6 @@ class TopBar extends React.Component {
                             position="bottom center" on="click" mouseLeaveDelay={300} mouseEnterDelay={0}
                             contentStyle={{ padding: '0px', border: 'none', width: '160px' }} arrow={false} closeOnDocumentClick>
                             <div className="account-menu">
-                                <button className="account-menu-btn" onClick={this.showFavoriteArtists}>Your Favorite Artists</button><br></br>
-                                <button className="account-menu-btn" onClick={this.showFavoriteGenres}>Your Favorite Genres</button><br></br>
                                 <button className="account-menu-btn" onClick={this.logout}>Logout</button>
                             </div>
                         </Menu>

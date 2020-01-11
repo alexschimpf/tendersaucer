@@ -9,7 +9,7 @@ from tendersaucer.config import APP_CONFIG
 from tendersaucer.service.spotify_client import Spotify
 from tendersaucer.service import redis_client, neo4j_client
 from flask import Flask, request, session, redirect, jsonify, render_template
-from tendersaucer.tasks import app as celery_app, build_genre_playlist, build_personalized_playlist
+from tendersaucer.tasks import app as celery_app, build_genre_playlist, build_artist_playlist
 from tendersaucer.utils import catch_errors, spotfiy_auth_required, delimited_list, boolean, TendersaucerException
 
 
@@ -66,26 +66,38 @@ def search_genres():
 def search_artists():
     query = (request.args.get('query') or '').strip().lower()
 
+    spotify_access_token = session['spotify_access_token']
+    spotify_client = Spotify(auth=spotify_access_token)
+
     results = []
-    if query:
-        genres = neo4j_client.get_all_genres()
-        matching_genres = list(filter(lambda genre: query in genre.lower(), genres))
+    artists = spotify_client.search(q=query, limit=50, type='artist')
+    for artist in (artists or {}).get('artists', {}).get('items') or ():
+        results.append({'id': artist['id'], 'name': artist['name']})
 
-        exact_matches = []
-        prefix_matches = []
-        substring_matches = []
-        for genre in matching_genres:
-            if genre == query:
-                exact_matches.append(genre)
-            elif genre.startswith(query):
-                prefix_matches.append(genre)
-            elif query in genre:
-                substring_matches.append(genre)
+    names_found = set()
+    exact_matches = []
+    prefix_matches = []
+    substring_matches = []
+    other_matches = []
+    for result in results:
+        artist_name = result['name'].lower()
 
-        results = exact_matches + prefix_matches + substring_matches
-        results = results[:100]
+        if artist_name in names_found:
+            continue
 
-    return jsonify(genres=results)
+        names_found.add(artist_name)
+
+        if artist_name == query:
+            exact_matches.append(result)
+        elif artist_name.startswith(query):
+            prefix_matches.append(result)
+        elif query in artist_name:
+            substring_matches.append(result)
+        else:
+            other_matches.append(result)
+    results = exact_matches + prefix_matches + substring_matches + other_matches
+
+    return jsonify(artists=results)
 
 
 @app.route('/build_playlist', methods=['GET'])
@@ -95,13 +107,13 @@ def build_playlist():
     spotify_access_token = session['spotify_access_token']
 
     playlist_name = request.args.get('playlist_name')
-    time_ranges = request.args.get('time_ranges', type=delimited_list())
     artist_popularity_range = request.args.get('artist_popularity_range', type=delimited_list(int))
     track_release_year_range = request.args.get('track_release_year_range', type=delimited_list(int))
     track_danceability_range = request.args.get('track_danceability_range', type=delimited_list(int))
     track_tempo_range = request.args.get('track_tempo_range', type=delimited_list(int))
     included_genres = request.args.get('included_genres', type=delimited_list())
     excluded_genres = request.args.get('excluded_genres', type=delimited_list())
+    included_artists = request.args.get('included_artists', type=delimited_list())
     exclude_familiar_artists = request.args.get('exclude_familiar_artists', type=boolean, default=False)
 
     max_search_depth = request.args.get('max_search_depth', type=int)
@@ -112,16 +124,14 @@ def build_playlist():
 
     playlist_type = request.args.get('playlist_type')
     if playlist_type == 'genre':
-        task = build_genre_playlist
-        result = task.delay(
+        result = build_genre_playlist.delay(
             spotify_access_token, playlist_name, included_genres, artist_popularity_range,
             track_release_year_range, track_danceability_range, track_tempo_range, exclude_familiar_artists)
-    elif playlist_type == 'favorite_artists':
-        task = build_personalized_playlist
-        result = task.delay(
-            spotify_access_token, playlist_name, time_ranges, artist_popularity_range,
-            track_release_year_range, track_danceability_range, track_tempo_range, included_genres,
-            excluded_genres, exclude_familiar_artists, max_search_depth)
+    elif playlist_type == 'artist':
+        result = build_artist_playlist.delay(
+            spotify_access_token, playlist_name, artist_popularity_range, track_release_year_range,
+            track_danceability_range, track_tempo_range, included_genres, included_artists, excluded_genres,
+            exclude_familiar_artists, max_search_depth)
     else:
         raise TendersaucerException('Invalid playlist_type')
 
@@ -172,7 +182,7 @@ def get_user_top_artists():
     spotify_access_token = session['spotify_access_token']
     spotify_client = Spotify(auth=spotify_access_token)
     user_top_artists = spotify_client.get_user_top_artists(time_ranges=(time_range,), limit=50)
-    user_top_artists = [artist['name'] for artist in user_top_artists]
+    user_top_artists = [dict(id=artist['id'], name=artist['name']) for artist in user_top_artists]
 
     return jsonify(top_artists=user_top_artists)
 

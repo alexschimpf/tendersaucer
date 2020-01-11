@@ -10,6 +10,7 @@ from tendersaucer.service.spotify_client import Spotify
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
+NUM_TRACKS_WARNING_MIN = 10
 MAX_NUM_TRACKS = 50
 NUM_THREAD_WORKERS = 4
 MAX_NUM_SEED_ARTISTS_BY_SEARCH_DEPTH = {
@@ -23,29 +24,30 @@ app = Celery('tendersaucer.tasks', **APP_CONFIG['celery'])
 
 
 @app.task(bind=True)
-def build_personalized_playlist(
-        self, spotify_access_token, playlist_name, time_ranges, artist_popularity_range,
+def build_artist_playlist(
+        self, spotify_access_token, playlist_name, artist_popularity_range,
         track_release_year_range, track_danceability_range, track_tempo_range, included_genres,
-        excluded_genres, exclude_familiar_artists, max_search_depth):
+        included_artists, excluded_genres, exclude_familiar_artists, max_search_depth):
+    included_artists = set(included_artists or ())
     included_genres = set(included_genres or ())
     excluded_genres = set(excluded_genres or ())
 
     spotify_client = Spotify(auth=spotify_access_token)
 
-    user_top_artists = spotify_client.get_user_top_artists(time_ranges=time_ranges)
+    included_artists = spotify_client.get_artists(artist_ids=included_artists)
     max_num_seed_artists = MAX_NUM_SEED_ARTISTS_BY_SEARCH_DEPTH[max_search_depth]
     if max_num_seed_artists:
-        user_top_artists = random.sample(user_top_artists, min(len(user_top_artists), max_num_seed_artists))
+        included_artists = random.sample(included_artists, min(len(included_artists), max_num_seed_artists))
 
-    seed_artists = list(user_top_artists)
+    seed_artists = list(included_artists)
     if max_search_depth:
         # Get related artists of user's favorite artists
         with ThreadPoolExecutor(max_workers=NUM_THREAD_WORKERS) as executor:
             futures = []
-            for user_top_artist in user_top_artists:
+            for included_artist in included_artists:
                 future = executor.submit(
                     neo4j_client.get_related_artists,
-                    artist_id=user_top_artist['id'], max_num_hops=max_search_depth)
+                    artist_id=included_artist['id'], max_num_hops=max_search_depth)
                 futures.append(future)
             for future in as_completed(futures):
                 seed_artists.extend(future.result() or ())
@@ -108,7 +110,7 @@ def build_personalized_playlist(
         raise Ignore()
 
     message = 'Your playlist has been created in your Spotify account.'
-    if len(track_ids) < MAX_NUM_TRACKS:
+    if len(track_ids) < NUM_TRACKS_WARNING_MIN:
         message += ' However, your criteria may be too limiting. ' \
                    'Try loosening your criteria for better results.'
     self.update_state(
@@ -173,7 +175,7 @@ def build_genre_playlist(
         raise Ignore()
 
     message = 'Your playlist has been created in your Spotify account.'
-    if len(track_ids) < MAX_NUM_TRACKS:
+    if len(track_ids) < NUM_TRACKS_WARNING_MIN:
         message += ' However, your criteria may be too limiting. ' \
                    'Try loosening your criteria for better results.'
     self.update_state(

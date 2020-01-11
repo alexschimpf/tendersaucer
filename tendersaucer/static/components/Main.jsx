@@ -3,7 +3,7 @@ import { Spring } from 'react-spring/renderprops';
 import TopBar from './TopBar';
 import SideBar from './SideBar';
 import GenreCriteria from './GenreCriteria';
-import FavoriteArtistsCriteria from './FavoriteArtistsCriteria';
+import ArtistCriteria from './ArtistCriteria';
 import Loader from 'react-loader-spinner';
 import Popup from 'react-popup';
 
@@ -15,14 +15,14 @@ class Main extends React.Component {
 
         let currYear = (new Date()).getFullYear();
         this.state = {
-            playlistType: 'favorite_artists',
+            playlistType: 'artist',
             artistPopularity: [0, 100],
             trackReleaseYear: [1900, currYear],
             trackTempo: [80, 160],
             trackDanceability: [0, 100],
             adventurousness: 0,
-            artistTimeRanges: [],
             genres: [],
+            artists: [],
             tableClassName: null,
             isLoading: false
         };
@@ -65,8 +65,8 @@ class Main extends React.Component {
                 track_danceability_range: this.state.trackDanceability.join(','),
                 track_tempo_range: this.state.trackTempo.join(','),
                 included_genres: this.state.genres.join(','),
-                max_search_depth: Number(this.state.adventurousness),
-                time_ranges: this.state.artistTimeRanges.join(',')
+                included_artists: this.state.artists.join(','),
+                max_search_depth: Number(this.state.adventurousness)
             }
         }).then(response => {
             let taskId = response.data.task_id;
@@ -116,9 +116,9 @@ class Main extends React.Component {
             if (!this.state.genres || !this.state.genres.length) {
                 errorMessage = 'Please select at least one genre.';
             }
-        } else {
-            if (!this.state.artistTimeRanges || !this.state.artistTimeRanges.length) {
-                errorMessage = 'Please select at least one artist time range.';
+        } else if (this.state.playlistType == 'artist') {
+            if (!this.state.artists || !this.state.artists.length) {
+                errorMessage = 'Please select at least one artist.'
             }
         }
 
@@ -180,7 +180,7 @@ class Main extends React.Component {
                             {
                                 this.state.playlistType == 'genre' ?
                                     <GenreCriteria onFormChanged={this.onFormChanged} /> :
-                                    <FavoriteArtistsCriteria onFormChanged={this.onFormChanged} />
+                                    <ArtistCriteria onFormChanged={this.onFormChanged} />
                             }
                                 <button className="btn default build-playlist-btn"
                                     onClick={this.buildPlaylist}>Build Playlist</button>
