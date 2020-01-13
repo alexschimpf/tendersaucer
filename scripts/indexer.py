@@ -213,16 +213,13 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.run_mode == 'update':
-        args.num_workers = 1
-
-    with ThreadPoolExecutor(max_workers=args.num_workers) as executor:
-        futures = []
-        for _ in range(args.num_workers):
-            if args.run_mode == 'discover':
+        run_update()
+    else:
+        with ThreadPoolExecutor(max_workers=args.num_workers) as executor:
+            futures = []
+            for _ in range(args.num_workers):
                 _visited = utils.ConcurrentSet()
                 future = executor.submit(run_discover, _visited, args.artist_cache_size, args.search_time_limit,
                                          args.no_progress_time_limit, args.run_time_limit)
-            elif args.run_mode == 'update':
-                future = executor.submit(run_update)
-            futures.append(future)
-        wait(futures)
+                futures.append(future)
+            wait(futures)

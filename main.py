@@ -3,12 +3,12 @@ import json
 import time
 import redis
 import datetime
-from flask_session import Session
 from celery.result import AsyncResult
+from flask_session import Session
+from flask import Flask, request, session, redirect, jsonify, render_template
 from tendersaucer.config import APP_CONFIG
 from tendersaucer.service.spotify_client import Spotify
 from tendersaucer.service import redis_client, neo4j_client
-from flask import Flask, request, session, redirect, jsonify, render_template
 from tendersaucer.tasks import app as celery_app, build_genre_playlist, build_artist_playlist
 from tendersaucer.utils import catch_errors, spotfiy_auth_required, delimited_list, boolean, TendersaucerException
 

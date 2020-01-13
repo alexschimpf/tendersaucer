@@ -1,0 +1,19 @@
+FROM tiangolo/node-frontend:10 as frontend
+WORKDIR /app
+ADD package.json /app/
+ADD package-lock.json /app/
+RUN npm install -g npm@6.7.0
+RUN npm install core-js@2.6.0
+RUN npm ci
+COPY ./ /app/
+RUN npm run prod
+
+FROM python:3.5
+WORKDIR /app
+COPY requirements.txt /app
+RUN pip install -U pip && \
+    pip install -r requirements.txt
+COPY ./ /app/
+COPY ./tendersaucer/static/ /app/static/
+COPY --from=frontend /app/tendersaucer/dist/ /app/static/
+COPY ./config/app_config.docker.json /app/app_config.json

@@ -1,0 +1,56 @@
+{
+    "environment": "dev",
+    "celery": {
+        "backend": "redis://redis:6379/1",
+        "broker": "redis://redis:6379/2"
+    },
+    "mysql": {
+        "host": "mysql",
+        "port": 3306,
+        "database": "tendersaucer",
+        "user": "root",
+        "password": "root",
+        "pool_size": 5
+    },
+    "redis": {
+        "session": {
+            "host": "redis",
+            "port": 6379,
+            "db": 0,
+            "max_connections": 1000
+        }
+    },
+    "neo4j": {
+        "user": "neo4j",
+        "password": "root",
+        "uri": "bolt://neo4j:7687"
+    },
+    "spotify": {
+        "client_id": null,
+        "client_secret": null,
+        "redirect_url": "http://0.0.0.0:5000/spotify_callback"
+    },
+    "logging": {
+        "version": 1,
+        "disable_existing_loggers": false,
+        "formatters": {
+            "default": {
+                "format": "%(asctime)s [PID %(process)d] [Thread %(thread)d] [%(levelname)s] [%(name)s] %(message)s"
+            }
+        },
+        "handlers": {
+            "console": {
+                "class": "logging.StreamHandler",
+                "level": "INFO",
+                "formatter": "default",
+                "stream": "ext://sys.stdout"
+            }
+        },
+        "root": {
+            "level": "INFO",
+            "handlers": [
+                "console"
+            ]
+        }
+    }
+}
